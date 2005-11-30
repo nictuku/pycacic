@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""Atualmente utilizado apenas para testar módulos
+"""
 
 import socket 
 
