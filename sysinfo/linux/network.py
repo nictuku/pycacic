@@ -11,9 +11,8 @@ import struct
 
 class interfaces:
     """Shows interfaces data. 
-       
-interf_dict provides a list of interfaces and their respective raw
-"ifconfig" data.
+    interf_dict provides a list of interfaces and their respective raw
+    "ifconfig" data.
     """
 
     interf_dict = {}
@@ -62,7 +61,6 @@ interf_dict provides a list of interfaces and their respective raw
         w = h.search(self.interf_dict[interf])
         netmask = w.group('netmask')
         return netmask
-
 
     def getStatus(self,interf):
         """Shows interface status
@@ -132,7 +130,6 @@ interf_dict provides a list of interfaces and their respective raw
             if not t1:
                return false
         return t1
-
 
     # Functions called by getDefaultGateway
 
