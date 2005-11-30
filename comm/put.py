@@ -35,7 +35,6 @@ class httpMethods:
         id_so=8&te_nome_computador=INF24GO&te_versao_cacic=2.0.0.23&
         """
 
-        # Este é o metodo correto para definir uma variável em branco?
         intro_string = None
 
         for key, value in info_dict.iteritems():

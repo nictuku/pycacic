@@ -168,6 +168,14 @@ class interfaces:
         if def_gateway:
             return def_gateway
 
+    # getDNSServers
+
+    # getDNSDomain
+
+    # getWINSServers
+
+    # getWindowsDomain
+
     # Auxiliary functions
 
     def hex2dec(self,s):
