@@ -3,11 +3,12 @@
 """Provides methods to communicate with the CACIC web server using HTTP
 """
 
-def putFormatedInfo(self,putinfo,destination):
+def putFormatedInfo(putinfo,destination):
     """Send pre-formated 'putinfo' string  to the 'destination' in the http server
     """
+    pass
 
-def formatInfo(self,info_dict):
+def formatInfo(info_dict):
     """Formats the 'info_dict' to the required format by putFormatedInfo()
 
     Important: as it uses dictionaries to organize the data, it won't return
@@ -31,7 +32,7 @@ def formatInfo(self,info_dict):
     id_so=8&te_nome_computador=INF24GO&te_versao_cacic=2.0.0.23&
     """
 
-    intro_string = None
+    info_string = ''
 
     for key, value in info_dict.iteritems():
         info_string += key + '=' + value + '&'

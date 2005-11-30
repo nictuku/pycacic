@@ -3,27 +3,6 @@
 """Atualmente utilizado apenas para testar módulos
 """
 
-import socket 
-
-from sysinfo import network
-
-a = network.interfaces()
-
-print "MAC:", a.mac_address('eth0')
-
-print "STATUS:",a.getStatus('eth0')
-
-print "IP:",a.getIpAddress('eth0')
-
-print "Rede:",a.getNetwork('eth0')
-
-print "Hostname:",a.hostname()
-
-print "Default Gateway:",a.getDefaultGateway()
-
-print "DHCP Server:",a.getDHCPServer('eth0')
-
-
 # Algoritmo:
 
 # x) MAIN: Verificar parâmetros de execução
@@ -47,6 +26,28 @@ print "DHCP Server:",a.getDHCPServer('eth0')
 # x) COMM: Enviar informações se forem novas ou atualizadas
 #
 
+import socket 
+
+from sysinfo import network
+
+a = network.interfaces()
+
+print "MAC:", a.mac_address('eth0')
+
+print "STATUS:",a.getStatus('eth0')
+
+print "IP:",a.getIpAddress('eth0')
+
+print "Rede:",a.getNetwork('eth0')
+
+print "Hostname:",a.hostname()
+
+print "Default Gateway:",a.getDefaultGateway()
+
+print "DHCP Server:",a.getDHCPServer('eth0')
+
+
+# Teste do COMM:
 info = {
  'te_node_address'          : a.mac_address('eth0'),
  'id_so'                    : '8',
@@ -62,11 +63,15 @@ info = {
 
 }
 
-import comm
-format = comm.formatInfo(info)
+# Desculpe colocar os imports fora de ordem, mas é só pra organizar os testes
+from comm import http
 
-print "format:", format
+format = http
 
+print format.formatInfo(info)
+
+
+# Original em Perl:
 # set_tcp_ip
 #        te_node_address => $info{'te_node_address'},
 #        id_so           => $linux_id,
