@@ -66,10 +66,12 @@ info = {
 # Desculpe colocar os imports fora de ordem, mas é só pra organizar os testes
 from comm import http
 
-format = http
+helloCACIC = http
 
-print format.formatInfo(info)
+print helloCACIC.formatInfo(info)
 
+# get_config cria a maquina, set_tcp_ip manda infos
+helloCACIC.putFormatedInfo(info,'cacic','/cacic2/ws/set_tcp_ip.php')
 
 # Original em Perl:
 # set_tcp_ip
