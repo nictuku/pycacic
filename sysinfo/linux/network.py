@@ -8,6 +8,7 @@ import logging
 import re
 import socket
 import struct
+import sys
 
 class interfaces:
     """Shows interfaces data. 
@@ -16,6 +17,8 @@ class interfaces:
     """
 
     interf_dict = {}
+
+    resolvconf = ''
 
     def __init__(self):
 	ifconfig = commands.getstatusoutput("export LANG=C; /sbin/ifconfig")
@@ -32,6 +35,51 @@ class interfaces:
 		if i % 2 == 0: # PARES
 		    self.interf_dict[ interf_list[i - 2] ] = x
 		i += 1
+    
+    try:
+        r = open('/etc/resolv.conf','r')
+    except:
+        logging.error("Erro ao ler /etc/resolv.conf")
+    else:
+        resolvconf = r.read()
+        r.close()
+
+    def getDNSDomain(self):
+
+        h = re.compile( r'.*(domain|search)\s+(?P<domain>.*)\s*',
+                        re.I)
+
+        w = h.search(self.resolvconf)
+        
+        domain = ''
+
+        if w:
+            domain = w.group('domain')
+
+        return domain
+
+    def getDNSResolvers(self):
+
+        r = re.compile( r'(nameserver)\s+(?P<resolver>\S+)\s*'
+                        r'((nameserver)\s+(?P<resolver2>\S+)\s*)?',
+                        re.I)
+
+        x = r.search(self.resolvconf)
+
+        resolvers = []
+
+        if x:
+            resolver = x.group('resolver')
+
+            if resolver:
+                resolvers.append(resolver)
+
+            resolver2 = x.group('resolver2')
+
+            if resolver2:
+                resolvers.append(resolver2)
+       
+        return resolvers
 
     def hostname(self):
         """Returns current hostname

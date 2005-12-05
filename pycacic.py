@@ -46,11 +46,14 @@ print "Default Gateway:",a.getDefaultGateway()
 
 print "DHCP Server:",a.getDHCPServer('eth0')
 
+print "DNS Domain:",a.getDNSDomain()
+
+print "Resolvers:",a.getDNSResolvers()
 
 # Teste do COMM:
 info = {
  'te_node_address'          : a.mac_address('eth0'),
- 'id_so'                    : '8',
+ 'id_so'                    : '0',
  'id_ip_rede'               : a.getNetwork('eth0'),
  'te_nome_computador'       : a.hostname(),
  'te_ip'                    : a.getIpAddress('eth0'),
@@ -59,7 +62,10 @@ info = {
  'te_gateway'               : a.getDefaultGateway(),
  'te_serv_dhcp'             : a.getDHCPServer('eth0'),
  'te_nome_host'             : a.hostname(),
- 'te_origem_mac'            : 'ifconfig'
+ 'te_origem_mac'            : 'ifconfig',
+ 'te_dns_primario'          : a.getDNSResolvers()[0],
+ 'te_dns_secundario'        : a.getDNSResolvers()[1],
+ 'te_dominio_dns'           : a.getDNSDomain(),
 
 }
 
@@ -71,7 +77,8 @@ helloCACIC = http
 print helloCACIC.formatInfo(info)
 
 # get_config cria a maquina, set_tcp_ip manda infos
-helloCACIC.putFormatedInfo(info,'cacic','/cacic2/ws/set_tcp_ip.php')
+helloCACIC.putFormatedInfo(info,'cacic','cacic2/ws/get_config.php')
+helloCACIC.putFormatedInfo(info,'cacic','cacic2/ws/set_tcp_ip.php')
 
 # Original em Perl:
 # set_tcp_ip
