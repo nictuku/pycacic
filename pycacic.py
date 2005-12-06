@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Atualmente utilizado apenas para testar módulos
+"""Atualmente utilizado apenas para testar módulos e testar
+metodologias e estruturas
 """
 
 # Algoritmo:
@@ -27,12 +28,16 @@
 #
 
 import socket 
+import logging 
 
 from sysinfo import network
-
+from sysinfo import smb
+#try: 
 a = network.interfaces()
+#except:
+#    raise 'Off'
 
-print "MAC:", a.mac_address('eth0')
+print "MAC:", a.getMacAddress('eth0')
 
 print "STATUS:",a.getStatus('eth0')
 
@@ -46,13 +51,36 @@ print "Default Gateway:",a.getDefaultGateway()
 
 print "DHCP Server:",a.getDHCPServer('eth0')
 
-print "DNS Domain:",a.getDNSDomain()
+a.getDNSDomain()
+a.getDNSResolvers()
+# This seems to be the proper way to handle errors from data collection methods.
+try:
+    domain = a.getDNSDomain()
+except:
+    domain = ''
+    logging.error('Erro ao consultar domain')
+else:
+    print "DNS Domain:",domain
 
-print "Resolvers:",a.getDNSResolvers()
+try:
+    resolvers = a.getDNSResolvers()
+except:
+    resolvers = [ '', '' ]
+    logging.error('Erro ao consultar resolvers')
+else:
+    print "Resolvers:", resolvers
 
-# Teste do COMM:
-info = {
- 'te_node_address'          : a.mac_address('eth0'),
+s = smb
+
+s.getSambaWorkgroup()
+#a.getSambaWorkgroup()
+
+# COMM'unication test.
+# It could be a good idea to use the key names for the variable names too,
+# like 'te_node_address' : te_node_address, and use a map to build the dict.
+
+info =  {
+ 'te_node_address'          : a.getMacAddress('eth0'),
  'id_so'                    : '0',
  'id_ip_rede'               : a.getNetwork('eth0'),
  'te_nome_computador'       : a.hostname(),
@@ -63,9 +91,9 @@ info = {
  'te_serv_dhcp'             : a.getDHCPServer('eth0'),
  'te_nome_host'             : a.hostname(),
  'te_origem_mac'            : 'ifconfig',
- 'te_dns_primario'          : a.getDNSResolvers()[0],
- 'te_dns_secundario'        : a.getDNSResolvers()[1],
- 'te_dominio_dns'           : a.getDNSDomain(),
+ 'te_dns_primario'          : resolvers[0],
+ 'te_dns_secundario'        : resolvers[1],
+ 'te_dominio_dns'           : domain
 
 }
 
@@ -77,30 +105,6 @@ helloCACIC = http
 print helloCACIC.formatInfo(info)
 
 # get_config cria a maquina, set_tcp_ip manda infos
-helloCACIC.putFormatedInfo(info,'cacic','cacic2/ws/get_config.php')
-helloCACIC.putFormatedInfo(info,'cacic','cacic2/ws/set_tcp_ip.php')
-
-# Original em Perl:
-# set_tcp_ip
-#        te_node_address => $info{'te_node_address'},
-#        id_so           => $linux_id,
-#        id_ip_rede => $request{'CONTENT'}{'NETWORKS'}[$interface]{'NETWORK'}[0],
-#        te_nome_computador => $Device,
-#        te_ip => $request{'CONTENT'}{'NETWORKS'}[$interface]{'IPADDRESS'}[0],
-#        te_mascara => $request{'CONTENT'}{'NETWORKS'}[$interface]{'IPMASK'}[0],
-#        te_gateway =>
-#          $request{'CONTENT'}{'NETWORKS'}[$interface]{'IPGATEWAY'}[0],
-#        te_serv_dhcp =>
-#          $request{'CONTENT'}{'NETWORKS'}[$interface]{'IPDHCP'}[0],
-#        te_dns_primario =>
-#          $request{'CONTENT'}{'NETWORKS'}[$interface]{'RESOLVER1'}[0],
-#        te_dns_secundario =>
-#          $request{'CONTENT'}{'NETWORKS'}[$interface]{'RESOLVER2'}[0],
-#        te_wins_primario   => '',
-#        te_wins_secundario => '',
-#        te_nome_host       => $Device,
-#        te_dominio_dns     =>
-#         $request{'CONTENT'}{'NETWORKS'}[$interface]{'DNSDOMAIN'}[0],
-#       te_origem_mac      => "ifconfig",
-#       te_dominio_windows => '',
+#helloCACIC.putFormatedInfo(info,'cacic','cacic2/ws/get_config.php')
+#helloCACIC.putFormatedInfo(info,'cacic','cacic2/ws/set_tcp_ip.php')
 
