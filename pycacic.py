@@ -31,7 +31,7 @@ import socket
 import logging 
 
 from sysinfo import network
-from sysinfo import smb
+from sysinfo import services
 #try: 
 a = network.interfaces()
 #except:
@@ -70,9 +70,11 @@ except:
 else:
     print "Resolvers:", resolvers
 
-s = smb
+s = services.smb()
 
-s.getSambaWorkgroup()
+s.getWorkgroup()
+
+s.getWinsServers()
 #a.getSambaWorkgroup()
 
 # COMM'unication test.
