@@ -29,84 +29,111 @@ metodologias e estruturas
 
 import socket 
 import logging 
-
+import sys
 from sysinfo import network
 from sysinfo import services
-#try: 
+from comm import http
+
+def handleErrorsWithEmptyString(source, argument_list):
+    """Handles errors for the given function call. Always returns a string - or
+     an empty one if an exception occurs.
+
+    Usage:
+        handleErrors(function, tuple_args)
+    
+    Note that 'function' must not have the parenthesis and tuple_args 
+    is actually a tuple.
+    
+    Example:
+        handleErrors(a.getMacAddress, ( 'eth0' ) )
+    """
+
+    arg = argument_list[:]
+
+    if len(arg) > 0:
+        try:
+            output = source(arg)
+        except:
+            return ''
+        else:
+            return output
+    else:
+        try:
+            output = source()
+        except:
+            return ''
+        else:
+            return output
+
+def handleErrorsUsingList(source, argument_list, item):
+    """Handles errors for the given function call which would return a list.
+    You must also specify the element and it will always return a string.
+
+    If an exception occurs it returns an empty string.
+
+    Usage:
+        handleErrors(function, tuple_args, item)
+    
+    Note that 'function' must not have the parenthesis and tuple_args is
+    actually a tuple.
+
+    Example:
+        handleErrorsUsingList(s.getWinsServers, ( 'eth0' ), 1 )
+    """
+
+    arg = argument_list[:]
+
+    if len(arg) > 0:
+        try:
+            output = source(arg)[item]
+        except:
+            return ''
+        else:
+            return output
+    else:
+        try:
+            output = source()[item]
+        except:
+            return ''
+        else:
+            return output
+
 a = network.interfaces()
-#except:
-#    raise 'Off'
-
-print "MAC:", a.getMacAddress('eth0')
-
-print "STATUS:",a.getStatus('eth0')
-
-print "IP:",a.getIpAddress('eth0')
-
-print "Rede:",a.getNetwork('eth0')
-
-print "Hostname:",a.hostname()
-
-print "Default Gateway:",a.getDefaultGateway()
-
-print "DHCP Server:",a.getDHCPServer('eth0')
-
-a.getDNSDomain()
-a.getDNSResolvers()
-# This seems to be the proper way to handle errors from data collection methods.
-try:
-    domain = a.getDNSDomain()
-except:
-    domain = ''
-    logging.error('Erro ao consultar domain')
-else:
-    print "DNS Domain:",domain
-
-try:
-    resolvers = a.getDNSResolvers()
-except:
-    resolvers = [ '', '' ]
-    logging.error('Erro ao consultar resolvers')
-else:
-    print "Resolvers:", resolvers
-
 s = services.smb()
-
-s.getWorkgroup()
-
-s.getWinsServers()
-#a.getSambaWorkgroup()
 
 # COMM'unication test.
 # It could be a good idea to use the key names for the variable names too,
 # like 'te_node_address' : te_node_address, and use a map to build the dict.
 
-info =  {
- 'te_node_address'          : a.getMacAddress('eth0'),
- 'id_so'                    : '0',
- 'id_ip_rede'               : a.getNetwork('eth0'),
- 'te_nome_computador'       : a.hostname(),
- 'te_ip'                    : a.getIpAddress('eth0'),
- 'te_versao_cacic'          : 'pyc',
- 'te_mascara'               : a.getNetmask('eth0'),
- 'te_gateway'               : a.getDefaultGateway(),
- 'te_serv_dhcp'             : a.getDHCPServer('eth0'),
- 'te_nome_host'             : a.hostname(),
- 'te_origem_mac'            : 'ifconfig',
- 'te_dns_primario'          : resolvers[0],
- 'te_dns_secundario'        : resolvers[1],
- 'te_dominio_dns'           : domain
+# Guido doesn't like extra spaces to align variables list, but I don't care!!!
 
-}
+info =  {
+ 'te_node_address'          : handleErrorsWithEmptyString(a.getMacAddress, ('eth0')),
+ 'id_so'                    : '0',
+ 'id_ip_rede'               : handleErrorsWithEmptyString(a.getNetwork, ('eth0')),
+ 'te_nome_computador'       : handleErrorsWithEmptyString(a.hostname, ()),
+ 'te_ip'                    : handleErrorsWithEmptyString(a.getIpAddress, ('eth0')),
+ 'te_versao_cacic'          : 'pyc',
+ 'te_mascara'               : handleErrorsWithEmptyString(a.getNetmask, ('eth0')),
+ 'te_gateway'               : handleErrorsWithEmptyString(a.getDefaultGateway, ()),
+ 'te_serv_dhcp'             : handleErrorsWithEmptyString(a.getDHCPServer, ('eth0')),
+ 'te_nome_host'             : handleErrorsWithEmptyString(a.hostname, ()),
+ 'te_origem_mac'            : 'ifconfig',
+ 'te_dns_primario'          : handleErrorsWithEmptyString(a.getDNSResolvers, ())[0],
+ 'te_dns_secundario'        : handleErrorsWithEmptyString(a.getDNSResolvers, ())[1],
+ 'te_dominio_dns'           : handleErrorsWithEmptyString(a.getDNSDomain, ()),
+ 'te_wins_primario'         : handleErrorsUsingList(s.getWinsServers, (), 0),
+ 'te_wins_secundario'       : handleErrorsUsingList(s.getWinsServers, (), 1),
+ 'te_workgroup'             : handleErrorsWithEmptyString(s.getWorkgroup, ()),
+ }
 
 # Desculpe colocar os imports fora de ordem, mas é só pra organizar os testes
-from comm import http
 
 helloCACIC = http
 
 print helloCACIC.formatInfo(info)
 
 # get_config cria a maquina, set_tcp_ip manda infos
-#helloCACIC.putFormatedInfo(info,'cacic','cacic2/ws/get_config.php')
-#helloCACIC.putFormatedInfo(info,'cacic','cacic2/ws/set_tcp_ip.php')
+helloCACIC.putFormatedInfo(info,'cacic','cacic2/ws/get_config.php')
+helloCACIC.putFormatedInfo(info,'cacic','cacic2/ws/set_tcp_ip.php')
 
