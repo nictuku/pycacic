@@ -117,6 +117,8 @@ print "aaaa", hw.data['Motherboard'][0]['product']
 
 
 info =  {
+  # falta: last log, serial da cpu, detalhes da RAM, teclado 
+
  'te_node_address'          : handleErrorsWithEmptyString(a.getMacAddress, ('eth0')),
  'id_so'                    : '0',
  'id_ip_rede'               : handleErrorsWithEmptyString(a.getNetwork, ('eth0')),
@@ -146,9 +148,16 @@ info =  {
  'qt_placa_video_cores'     : hw.data['VGA compatible controller'][0]['width'],
  'te_placa_som_desc'        : hw.data['Multimedia audio controller'][0]['product'],
  'te_teclado_desc'          : '',
- 'te_bios_desc'             : hw.data['BIOS'][0]['product'],
+ 'te_bios_desc'             : hw.data['BIOS'][0]['vendor'] + ' ' + hw.data['BIOS'][0]['version'],
  'te_bios_fabricante'       : hw.data['BIOS'][0]['vendor'],
  'te_bios_data'             : hw.data['BIOS'][0]['version'],
+ 'te_cdrom_desc'            : hw.data['DVD reader'][0]['product'],
+ 'te_modem_desc'            : hw.data['Modem'][0]['vendor'] + ' ' + hw.data['Modem'][0]['product'],
+ 'te_mouse_desc'            : hw.data['Mouse'][0]['product'] + ' ' + hw.data['Mouse'][0]['vendor'],
+ 'qt_mem_ram'               : hw.data['System Memory'][0]['size'],
+# 'te_mem_ram_desc'          : hw.data['System Memory'][0]['
+ 'te_placa_rede_desc'       : hw.data['Ethernet interface'][0]['vendor'] + ' ' + 
+                            hw.data['Ethernet interface'][0]['product'],
  }
 
 # Desculpe colocar os imports fora de ordem, mas é só pra organizar os testes

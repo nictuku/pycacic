@@ -100,7 +100,7 @@ class LshwDataParser(ContentHandler):
 
         # This will populate self.Nodes[-1] with relevant data.
         # Not that it would only work for unique data (like physid)
-        for x in ['description', 'physid', 'product', 'vendor', 'version', 'size', 'slot', 'width']:
+        for x in ['description', 'physid', 'product', 'vendor', 'version', 'size', 'slot', 'width', 'serial']:
 
             if self.CurrentTag[-1]['name'] == x:
  
@@ -114,7 +114,8 @@ class LshwDataParser(ContentHandler):
         """
 
         for element in ['CPU', 'BIOS', 'System Memory', 'Motherboard', 'VGA compatible controller', 
-                'Multimedia audio controller']:
+                'Multimedia audio controller', 'DVD reader', 'Modem' ,'Mouse',
+                'Ethernet interface']:
 
             if node['description'] == element:
                 if not self.HardWare.has_key(element):
@@ -122,7 +123,7 @@ class LshwDataParser(ContentHandler):
     
                 self.HardWare[element].append({})
     
-                for info in ['product', 'vendor', 'size','version', 'slot', 'width']:
+                for info in ['product', 'vendor', 'size','version', 'slot', 'width', 'serial']:
                     if node.has_key(info):
                         set = node[info]
                         if info == 'size' and len(self.CurrentTagUnits) > 1:
