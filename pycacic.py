@@ -32,6 +32,7 @@ import logging
 import sys
 from sysinfo import network
 from sysinfo import services
+from sysinfo import hardware
 from comm import http
 
 def handleErrorsWithEmptyString(source, argument_list):
@@ -101,11 +102,19 @@ def handleErrorsUsingList(source, argument_list, item):
 a = network.interfaces()
 s = services.smb()
 
+hw =  hardware.HardWare()
+
+
+print "aaaa", hw.data['Motherboard'][0]['product']
+
+#print "hw", hw.data
+
 # COMM'unication test.
 # It could be a good idea to use the key names for the variable names too,
 # like 'te_node_address' : te_node_address, and use a map to build the dict.
 
 # Guido doesn't like extra spaces to align variables list, but I don't care!!!
+
 
 info =  {
  'te_node_address'          : handleErrorsWithEmptyString(a.getMacAddress, ('eth0')),
@@ -125,6 +134,21 @@ info =  {
  'te_wins_primario'         : handleErrorsUsingList(s.getWinsServers, (), 0),
  'te_wins_secundario'       : handleErrorsUsingList(s.getWinsServers, (), 1),
  'te_workgroup'             : handleErrorsWithEmptyString(s.getWorkgroup, ()),
+ #hardware
+ 'te_placa_mae_desc'        : hw.data['Motherboard'][0]['product'],
+ 'te_placa_mae_fabricante'  : hw.data['Motherboard'][0]['vendor'],
+ 'te_cpu_serial'            : '',
+ 'te_cpu_desc'              : hw.data['CPU'][0]['product'],
+ 'te_cpu_fabricante'        : hw.data['CPU'][0]['vendor'],
+ 'te_cpu_freq'              : hw.data['CPU'][0]['size'],
+ 'te_placa_video_desc'      : hw.data['VGA compatible controller'][0]['product'],
+ 'qt_placa_video_mem'       : hw.data['VGA compatible controller'][0]['size'],
+ 'qt_placa_video_cores'     : hw.data['VGA compatible controller'][0]['width'],
+ 'te_placa_som_desc'        : hw.data['Multimedia audio controller'][0]['product'],
+ 'te_teclado_desc'          : '',
+ 'te_bios_desc'             : hw.data['BIOS'][0]['product'],
+ 'te_bios_fabricante'       : hw.data['BIOS'][0]['vendor'],
+ 'te_bios_data'             : hw.data['BIOS'][0]['version'],
  }
 
 # Desculpe colocar os imports fora de ordem, mas é só pra organizar os testes
@@ -133,7 +157,9 @@ helloCACIC = http
 
 print helloCACIC.formatInfo(info)
 
+#print "hw:", hw.__dict__
 # get_config cria a maquina, set_tcp_ip manda infos
-#helloCACIC.putFormatedInfo(info,'cacic','cacic2/ws/get_config.php')
-#helloCACIC.putFormatedInfo(info,'cacic','cacic2/ws/set_tcp_ip.php')
+helloCACIC.putFormatedInfo(info,'cacic','cacic2/ws/get_config.php')
+helloCACIC.putFormatedInfo(info,'cacic','cacic2/ws/set_tcp_ip.php')
+helloCACIC.putFormatedInfo(info,'cacic','cacic2/ws/set_hardware.php')
 

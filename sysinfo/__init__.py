@@ -8,6 +8,7 @@ import sys
 
 if sys.platform == 'linux2':
     from linux import network
+    from linux import hardware
     from linux import services
 
 elif sys.platform == 'win32':
