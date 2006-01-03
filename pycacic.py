@@ -34,6 +34,11 @@ from sysinfo import network
 from sysinfo import services
 from sysinfo import hardware
 from comm import http
+def handleDictErrorsWithEmptyString(source):
+    if source:
+        return source
+    else:
+        return ''
 
 def handleErrorsWithEmptyString(source, argument_list):
     """Handles errors for the given function call. Always returns a string - or
@@ -105,7 +110,7 @@ s = services.smb()
 hw =  hardware.HardWare()
 
 
-print "aaaa", hw.data['Motherboard'][0]['product']
+print "aaaa", handleDictErrorsWithEmptyString(hw.data['Motherboard'][0]['product'])
 
 #print "hw", hw.data
 
@@ -114,6 +119,8 @@ print "aaaa", hw.data['Motherboard'][0]['product']
 # like 'te_node_address' : te_node_address, and use a map to build the dict.
 
 # Guido doesn't like extra spaces to align variables list, but I don't care!!!
+
+print handleDictErrorsWithEmptyString(hw.data['Mouse'][0]['product'])
 
 
 info =  {

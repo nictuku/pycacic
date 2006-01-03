@@ -15,6 +15,7 @@ import sys
 
 # Exceptions structure from:
 # http://www.diveintopython.org/refactoring/handling_changing_requirements.html
+interfaces = list
 
 class NetworkInfoError(Exception): 
     pass
@@ -46,7 +47,7 @@ class interfaces:
 
         # Populate 'ifconfig' and 'resolvconf' with the respective raw data.
 
-        ifconfig = commands.getstatusoutput("export LANG=C; /sbin/ifconfig")
+        ifconfig = commands.getstatusoutput("export LANGUAGE=C; /sbin/ifconfig")
         if ifconfig[0] != 0:
             # This would kill this module instance. Should we handle it instead?
             raise IfconfigError, "could not run /sbin/ifconfig"
@@ -243,7 +244,7 @@ class interfaces:
         routebin = commands.getstatusoutput("export LANG=C; /sbin/route -n")
 
         if routebin[0] != 0:
-            logging.error("Erro while trying to run route")
+            logging.error("Error while trying to run route")
             return false
         h = re.compile('\n0.0.0.0\s+(?P<def_gateway>[\w.]+)\s+')
         w = h.search(routebin[1])

@@ -3,6 +3,8 @@
 """Provides specific services information
 """
 
+# FIXME, add "SHARES" collections
+
 import re
 
 class GetServicesInfoError(Exception):
