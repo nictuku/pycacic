@@ -125,6 +125,9 @@ print handleDictErrorsWithEmptyString(hw.data['Mouse'][0]['product'])
 
 info =  {
   # falta: last log, serial da cpu, detalhes da RAM, teclado 
+  # IMPORTANTE. A estrutura de informações da sysinfo será alterado, seguindo
+  # uma estrutura não-funcional.
+  # Veja o source do sysinfo para mais informações sobre a futura estrutura
 
  'te_node_address'          : handleErrorsWithEmptyString(a.getMacAddress, ('eth0')),
  'id_so'                    : '0',

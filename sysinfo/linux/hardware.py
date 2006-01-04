@@ -14,6 +14,7 @@ import sys
 
 # FIXME: teste feito em MDS500 mostrou que lshw às vezes gera um XML com caracteres
 # estranhos, como ^E^D^D^C
+
 class LSHWRunError(Exception):
     pass
 
@@ -143,7 +144,7 @@ class HardWare:
         handler = LshwDataParser()
         parser.setContentHandler(handler)
 
-        lshwxml = commands.getstatusoutput("export LANG=C; /usr/sbin/lshw -xml 2>&1|grep -v WARNING")
+        lshwxml = commands.getstatusoutput("export LANGUAGE=C; /usr/sbin/lshw -xml 2>&1|grep -v WARNING")
         if lshwxml[0] != 0:
             # This would kill this module instance. Should we handle it instead?
             raise LSHWRunError, "could not run /usr/sbin/lshw"
