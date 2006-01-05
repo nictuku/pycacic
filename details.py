@@ -8,6 +8,7 @@ import urllib2
 import httplib
 import base64
 import re
+import sys
 
 # Precisamos montar um dicionário com os detalhes, a partir de
 # diversas fontes, dependendo da situação.
@@ -28,6 +29,71 @@ import re
 # FIXME do gerente:
 # Quando desabilitado, o tag "cs_coleta_patrimonio" *NAO APARECE*, ao invés de aparecer
 # com "N".
+
+
+remote_cfg = {}
+
+
+remote_raw_cfg = """<br />
+<b>Warning</b>:  reset(): Passed variable is not an array or object in <b>/var/www/cacic2/ws/get_config.php</b> on 
+line <b>192</b><br />
+<br />
+<b>Warning</b>:  reset(): Passed variable is not an array or object in <b>/var/www/cacic2/ws/get_config.php</b> on 
+line <b>193</b><br />
+<br />
+<b>Warning</b>:  closedir(): supplied argument is not a valid Directory resource in 
+<b>/var/www/cacic2/ws/get_config.php</b> on line <b>362</b><br />
+<?xml version="1.0" encoding="iso-8859-1" ?>
+    <STATUS>OK</STATUS>
+    
+<CONFIGS><cs_auto_update>S</cs_auto_update><cs_coleta_compart>S</cs_coleta_compart><cs_coleta_hardware>S</cs_coleta_hardware><cs_coleta_monitorado>S</cs_coleta_monitorado><cs_coleta_officescan>S</cs_coleta_officescan><cs_coleta_patrimonio>S</cs_coleta_patrimonio><cs_coleta_software>S</cs_coleta_software><cs_coleta_unid_disc>S</cs_coleta_unid_disc><SISTEMAS_MONITORADOS_PERFIS>24,2004-07-26 
+19:02:37,0,,.,0,,0,,.,.,S,Microsoft Office 2000#40,2005-02-23 
+18:11:37,0,,.,0,,3,Cacic\cacic2.ini/Coleta/te_versao_cacic,.,.,N,.#41,2005-04-01 
+10:06:11,0,,.,0,,3,Cacic\cacic2.ini/Coleta/te_versao_ger_cols,.,.,N,.#42,2005-04-01 
+10:06:18,0,,.,0,,3,Cacic\cacic2.ini/Coleta/te_versao_ini_cols,.,.,N,.</SISTEMAS_MONITORADOS_PERFIS><in_exibe_bandeja>N</in_exibe_bandeja><in_exibe_erros_criticos>N</in_exibe_erros_criticos><nu_exec_apos>0</nu_exec_apos><nu_intervalo_exec>2</nu_intervalo_exec><nu_intervalo_renovacao_patrim>5</nu_intervalo_renovacao_patrim><te_senha_adm_agente>abc</te_senha_adm_agente><te_enderecos_mac_invalidos>00-00-00-00-00-00,44-45-53-54-00-00,44-45-53-54-00-01,
+00-53-45-00-00-00,00-50-56-C0-00-01,00-50-56-C0-00-08</te_enderecos_mac_invalidos><te_janelas_excecao></te_janelas_excecao><TE_SERV_CACIC>10.68.8.246</TE_SERV_CACIC><TE_SERV_UPDATES>10.68.8.248</TE_SERV_UPDATES><NU_PORTA_SERV_UPDATES>21</NU_PORTA_SERV_UPDATES><TE_PATH_SERV_UPDATES>/ftpcacic</TE_PATH_SERV_UPDATES><NM_USUARIO_LOGIN_SERV_UPDATES>ftpcacic</NM_USUARIO_LOGIN_SERV_UPDATES><TE_SENHA_LOGIN_SERV_UPDATES>cacicftp</TE_SENHA_LOGIN_SERV_UPDATES><in_exibe_bandeja>N</in_exibe_bandeja><in_exibe_erros_criticos>N</in_exibe_erros_criticos><nu_exec_apos>0</nu_exec_apos><nu_intervalo_exec>2</nu_intervalo_exec><nu_intervalo_renovacao_patrim>5</nu_intervalo_renovacao_patrim><te_senha_adm_agente>abc</te_senha_adm_agente><te_enderecos_mac_invalidos>00-00-00-00-00-00,44-45-53-54-00-00,44-45-53-54-00-01,
+00-53-45-00-00-00,00-50-56-C0-00-01,00-50-56-C0-00-08</te_enderecos_mac_invalidos><te_janelas_excecao></te_janelas_excecao></CONFIGS>"""
+
+print remote_raw_cfg
+
+# Definição das configurações remotas
+# argh, OO precisa entrar na minha cabeça logo.
+
+def parse_remote_raw_cfg(cfg, cfg_regex, mode):
+    x = re.compile(cfg_regex, re.I)
+    w = x.search(remote_raw_cfg)
+
+    if w:
+        print w
+        if mode == 'boolean':
+            remote_cfg[cfg] = True
+            print "Ok", cfg, " = true"
+
+        elif mode == 'string':
+            print cfg_regex
+            setting = w.groups('mac_invalidos')
+            print "bla", w.group('mac_invalidos')
+            remote_cfg[cfg] = setting
+    else:
+        remote_cfg[cfg] = False
+        print cfg, " = false"
+
+parse_remote_raw_cfg('patrimony_collection', '<cs_coleta_patrimonio>\s*s\s*<\/cs_coleta_patrimonio>', 'boolean')
+parse_remote_raw_cfg('hardware_collection', '<cs_coleta_hardware>\s*S\s*<\/cs_coleta_hardware>', 'boolean')
+parse_remote_raw_cfg('disk_collection', '<cs_coleta_unid_disc>\s*S\s*<\/cs_coleta_unid_disc>', 'boolean')
+
+parse_remote_raw_cfg('ignore_macs', 
+ '<te_enderecos_mac_invalidos>(?P<mac_invalidos>[^<]*)<\/te_enderecos_mac_invalidos>', 
+ 'string')
+
+#<te_enderecos_mac_invalidos>([^<]*)<\/te_enderecos_mac_invalidos>
+
+print remote_cfg
+
+sys.exit(0)
+
+
+
 
 def get_config(data):
     """Consulta no servidor a atual configuração da rede atual
@@ -171,12 +237,12 @@ def formatInfo(info_dict):
 
     return info_string
 
-a = network.interfaces()
-s = services.smb()
+#a = network.interfaces()
+#s = services.smb()
 
-hw =  hardware.HardWare()
+#hw =  hardware.HardWare()
 
-
+"""
 info =  {
   # falta: last log, serial da cpu, detalhes da RAM, teclado
 
@@ -220,8 +286,9 @@ info =  {
 # 'te_placa_rede_desc'       : hw.data['Ethernet interface'][0]['vendor'] + ' ' +
 #                            hw.data['Ethernet interface'][0]['product'],
  }
+"""
 
+#config = get_config(info)
 
-config = get_config(info)
+#print "config:", config
 
-print "config:", config
