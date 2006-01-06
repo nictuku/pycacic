@@ -175,6 +175,30 @@ class motherboard:
         self.product = hw.data['Motherboard'][index].get('product', '')
         self.vendor = hw.data['Motherboard'][index].get('vendor', '')
 
+
+class memory:
+    size = ''
+
+    def __init__(self, hw):
+        self.size = hw.data['System Memory'][0].get('size', '')
+
+class mouse:
+    product = ''
+    vendor = ''
+
+    def __init__(self, hw, index=0):
+        self.product = hw.data['Mouse'][index].get('product', '')
+        self.vendor = hw.data['Mouse'][index].get('vendor', '')
+
+
+class modem:
+    product = ''
+    vendor = ''
+
+    def __init__(self, hw, index=0):
+        self.product = hw.data['Modem'][index].get('product', '')
+        self.vendor = hw.data['Modem'][index].get('vendor', '')
+
 class dvd_reader:
     product = ''
     
@@ -206,12 +230,12 @@ class bios:
 class video_board:
     product = ''
     vendor = ''
-    size = ''
+    memory = ''
     width = ''
     
     def __init__(self, hw, index=0):
         self.product = hw.data['VGA compatible controller'][index].get('product')
-        self.size = hw.data['VGA compatible controller'][index].get('size')
+        self.memory = hw.data['VGA compatible controller'][index].get('size')
         self.width = hw.data['VGA compatible controller'][index].get('width')
         self.vendor = hw.data['VGA compatible controller'][index].get('vendor')
 
@@ -238,13 +262,13 @@ class ethernet_board:
 class cpu:
     product = ''
     vendor = ''
-    size = ''
+    frequency = ''
     serial = ''
     
     def __init__(self, hw, index=0):
         self.product = hw.data['CPU'][index].get('product', '')
         self.vendor = hw.data['CPU'][index].get('vendor', '')
-        self.size = hw.data['CPU'][index].get('size', '')
+        self.frequency = hw.data['CPU'][index].get('size', '')
 
 class hardware:
     """This is the interfaced accessed by the user. It provides
@@ -262,6 +286,9 @@ class hardware:
     sound_board = ''
     bios = ''
     dvd_reader = ''
+    modem = ''
+    mouse = ''
+    memory = ''
     
     def __init__(self):
         self.hw = get_hardware()
@@ -272,6 +299,9 @@ class hardware:
         self.sound_board = sound_board(self.hw, 0)
         self.bios = bios(self.hw) # BIOS is always index=0
         self.dvd_reader = dvd_reader(self.hw, 0)
+        self.modem = modem(self.hw, 0)
+        self.mouse = mouse(self.hw, 0)
+        self.memory = memory(self.hw)
 
 if __name__ == '__main__':
 #    a = get_hardware()
@@ -279,4 +309,4 @@ if __name__ == '__main__':
     x = hardware()
     y = x.motherboard
     print "h", x.motherboard.vendor, x.ethernet_board.product, x.video_board.product, x.video_board.vendor,\
-        x.dvd_reader.product
+        x.dvd_reader.product, x.memory.size

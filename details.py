@@ -88,9 +88,9 @@ parse_remote_raw_cfg('ignore_macs',
 
 #<te_enderecos_mac_invalidos>([^<]*)<\/te_enderecos_mac_invalidos>
 
-print remote_cfg
+#print remote_cfg
 
-sys.exit(0)
+#sys.exit(0)
 
 
 
@@ -101,7 +101,7 @@ def get_config(data):
     path = 'cacic2/ws/get_config.php'
     server = 'cacic'
 
-    debug = urllib2.HTTPHandler(debuglevel=0)
+    debug = urllib2.HTTPHandler(debuglevel=1)
 
     url = 'http://' + server + '/' + path
     base64string = base64.encodestring('%s:%s' % ('USER_CACIC', 'PW_CACIC'))[:-1]
@@ -288,7 +288,7 @@ info =  {
  }
 """
 
-#config = get_config(info)
+config = get_config(info)
 
-#print "config:", config
+print "config:", config
 

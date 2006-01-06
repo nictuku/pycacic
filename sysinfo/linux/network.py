@@ -140,7 +140,6 @@ class misc:
         self.hostname = socket.gethostname()
         self.default_gateway = self.get_default_gateway()
         self.interfaces = ifconfig_instance.interf_dict.keys()
-        print "misc init"
 
     def get_default_gateway(self):
         t1 = self.get_default_gateway_from_proc()
@@ -329,7 +328,6 @@ class network(resolv, ifconfig, misc):
         resolv.__init__(self)
         ifconfig.__init__(self)
         misc.__init__(self)
-        print "network"
         self.interface = interface
         
 

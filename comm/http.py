@@ -16,7 +16,7 @@ def putFormatedInfo(putinfo,server,path):
     import httplib
     import base64
 
-    debug = urllib2.HTTPHandler(debuglevel=1)
+    debug = urllib2.HTTPHandler(debuglevel=0)
 
     url = 'http://' + server + '/' + path
 

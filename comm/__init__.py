@@ -2,17 +2,18 @@
 # -*- coding: utf-8 -*-
 """Provides methods for communication with the CACIC server.
 
-Currently it uses HTTP which is the only method supported by
-the server.
+Currently it uses HTTP with ini-like data transfer, which is the
+only method supported by the server at the moment.
 """
 
 import sysinfo
 
 import http
+import config
 
 net = sysinfo.network()
 smb = sysinfo.services.smb()
-hw =  sysinfo.hardware.HardWare()
+hw =  sysinfo.hardware()
 
 interf = net.interface('eth0')
 
@@ -36,29 +37,62 @@ info =  {
  'te_wins_secundario'       : smb.wins_servers[0],
  'te_workgroup'             : smb.workgroup,
  #hardware
- 'te_placa_mae_desc'        : hw.data['Motherboard'][0]['product'],
- 'te_placa_mae_fabricante'  : hw.data['Motherboard'][0]['vendor'],
+ 'te_placa_mae_desc'        : hw.motherboard.product,
+ 'te_placa_mae_fabricante'  : hw.motherboard.vendor,
  'te_cpu_serial'            : '',
- 'te_cpu_desc'              : hw.data['CPU'][0]['product'],
- 'te_cpu_fabricante'        : hw.data['CPU'][0]['vendor'],
- 'te_cpu_freq'              : hw.data['CPU'][0]['size'],
- 'te_placa_video_desc'      : hw.data['VGA compatible controller'][0]['product'],
- 'qt_placa_video_mem'       : hw.data['VGA compatible controller'][0]['size'],
- 'qt_placa_video_cores'     : hw.data['VGA compatible controller'][0]['width'],
- 'te_placa_som_desc'        : hw.data['Multimedia audio controller'][0]['product'],
+ 'te_cpu_desc'              : hw.cpu.product,
+ 'te_cpu_fabricante'        : hw.cpu.vendor,
+ 'te_cpu_freq'              : hw.cpu.frequency,
+ 'te_placa_video_desc'      : hw.video_board.product,
+ 'qt_placa_video_mem'       : hw.video_board.memory,
+ 'qt_placa_video_cores'     : hw.video_board.width,
+ 'te_placa_som_desc'        : hw.sound_board.product,
  'te_teclado_desc'          : '',
- 'te_bios_desc'             : hw.data['BIOS'][0]['vendor'] + ' ' + hw.data['BIOS'][0]['version'],
- 'te_bios_fabricante'       : hw.data['BIOS'][0]['vendor'],
- 'te_bios_data'             : hw.data['BIOS'][0]['version'],
- 'te_cdrom_desc'            : hw.data['DVD reader'][0]['product'],
- 'te_modem_desc'            : hw.data['Modem'][0]['vendor'] + ' ' + hw.data['Modem'][0]['product'],
- 'te_mouse_desc'            : hw.data['Mouse'][0]['product'] + ' ' + hw.data['Mouse'][0]['vendor'],
- 'qt_mem_ram'               : hw.data['System Memory'][0]['size'],
-# 'te_mem_ram_desc'          : hw.data['System Memory'][0]['
- 'te_placa_rede_desc'       : hw.data['Ethernet interface'][0]['vendor'] + ' ' +
-                            hw.data['Ethernet interface'][0]['product'],
+ 'te_bios_desc'             : hw.bios.vendor + hw.bios.version,
+ 'te_bios_fabricante'       : hw.bios.vendor,
+ 'te_bios_data'             : hw.bios.version,
+ 'te_cdrom_desc'            : hw.dvd_reader.product,
+ 'te_modem_desc'            : hw.modem.vendor + hw.modem.product,
+ 'te_mouse_desc'            : hw.mouse.product + hw.mouse.vendor,
+ 'qt_mem_ram'               : hw.memory.size,
+# 'te_mem_ram_desc'          :
+ 'te_placa_rede_desc'       : hw.ethernet_board.vendor + hw.ethernet_board.product
  }
+
+config_info = {
+ 'te_node_address'          : info['te_node_address'],
+ 'id_so'                    : info['id_so',
+ 'id_ip_rede'               : info['id_ip_rede'],
+ 'te_nome_computador'       : info['te_nome_computador'],
+ 'te_ip'                    : info['te_ip'],
+ 'te_versao_cacic'          : info['te_versao_cacic'],
+
+}
+
+remote_raw_cfg = config.get_config(info)
+
+#print "Remote raw config:", remote_raw_cfg
+
+remote_cfg = {}
+
+remote_cfg['patrimony_collection'] = config.parse_remote_raw_cfg(
+ 'patrimony_collection', '<cs_coleta_patrimonio>\s*s\s*<\/cs_coleta_patrimonio>', 
+ remote_raw_cfg, 'boolean')
+
+remote_cfg['hardware_collection'] = config.parse_remote_raw_cfg(
+ 'hardware_collection', '<cs_coleta_hardware>\s*S\s*<\/cs_coleta_hardware>', 
+ remote_raw_cfg, 'boolean')
+
+remote_cfg['disk_collection'] = config.parse_remote_raw_cfg(
+ 'disk_collection', '<cs_coleta_unid_disc>\s*S\s*<\/cs_coleta_unid_disc>', 
+ remote_raw_cfg, 'boolean')
+
+remote_cfg['ignore_macs'] = config.parse_remote_raw_cfg(
+ 'ignore_macs', 
+  '<te_enderecos_mac_invalidos>(?P<mac_invalidos>[^<]*)<\/te_enderecos_mac_invalidos>',
+ remote_raw_cfg, 'string')
 
 
 if __name__ == '__main__':
     print info
+    print remote_cfg
