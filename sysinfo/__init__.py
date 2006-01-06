@@ -16,6 +16,10 @@ a portable way, for both Linux and Windows.
 # sysinfo.network().interface('eth0').vendor = str
 # sysinfo.services.smb.workgroup = str
 # sysinfo.services.smb.winsservers = list
+# sysinfo.hardware.motherboard.product
+# sysinfo.hardware.motherboard.vendor
+# sysinfo.hardware.videoboard.product
+# sysinfo.hardware.videoboard.vendor
 #
 # All data must be populated, even with empty values.
 #

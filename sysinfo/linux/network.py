@@ -324,6 +324,7 @@ class network(resolv, ifconfig, misc):
     """This is the stuff users will access. It inherits data from other 'os' 
     classes so users can access information like network.dnsdomain.
     """
+
     def __init__(self):
         resolv.__init__(self)
         ifconfig.__init__(self)

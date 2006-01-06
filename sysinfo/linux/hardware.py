@@ -113,9 +113,9 @@ class LshwDataParser(ContentHandler):
     def setHardWare(self, node):
         """Argh. This is ugly.
         """
-
+        # FIXME: hmm what's the string for CD reader?
         for element in ['CPU', 'BIOS', 'System Memory', 'Motherboard', 'VGA compatible controller', 
-                'Multimedia audio controller', 'DVD reader', 'Modem' ,'Mouse',
+                'Multimedia audio controller', 'DVD-RAM writer', 'DVD reader', 'Modem' ,'Mouse',
                 'Ethernet interface']:
 
             if node['description'] == element:
@@ -134,8 +134,7 @@ class LshwDataParser(ContentHandler):
                         self.HardWare[element][-1][info] = set
 
 
-#if __name__ == '__main__':
-class HardWare:
+class get_hardware:
  
     data = {}
 
@@ -164,9 +163,120 @@ class HardWare:
 #        parser.parse('lshw.xml')
         self.data = handler.HardWare
 
-if __name__ == '__main__':
-#print handler.HardWare['BIOS'][0]['version']
-    a = HardWare()
+
+
+hw = get_hardware()
+
+class motherboard:
+    product = ''
+    vendor = ''
+
+    def __init__(self, hw, index=0):
+        self.product = hw.data['Motherboard'][index].get('product', '')
+        self.vendor = hw.data['Motherboard'][index].get('vendor', '')
+
+class dvd_reader:
+    product = ''
     
-    print a.data
-    print a.data['BIOS'][0]['version']
+    def __init__(self, hw, index=0):
+        self.product = hw.data['DVD reader'][index].get('product', '')
+
+class dvd_ram_writer:
+    product = ''
+    serial = ''
+    version = ''
+    
+    def __init__(self, hw, index=0):
+        self.product = hw.data['DVD reader'][index].get('product', '')
+        self.serial = hw.data['DVD reader'][index].get('serial', '')
+        self.version = hw.data['DVD reader'][index].get('version', '')
+
+class bios:
+    product = ''
+    vendor = ''
+    version = ''
+    
+    def __init__(self, hw):
+        self.product = hw.data['BIOS'][0].get('product', '')
+        self.vendor = hw.data['BIOS'][0].get('vendor', '')
+        self.version = hw.data['BIOS'][0].get('version', '')
+
+
+
+class video_board:
+    product = ''
+    vendor = ''
+    size = ''
+    width = ''
+    
+    def __init__(self, hw, index=0):
+        self.product = hw.data['VGA compatible controller'][index].get('product')
+        self.size = hw.data['VGA compatible controller'][index].get('size')
+        self.width = hw.data['VGA compatible controller'][index].get('width')
+        self.vendor = hw.data['VGA compatible controller'][index].get('vendor')
+
+class sound_board:
+    product = ''
+    
+    def __init__(self, hw, index=0):
+        self.product = hw.data['Multimedia audio controller'][index].get('product')
+
+class ethernet_board:
+    product = ''
+    width = ''
+    version = ''
+    vendor = ''
+    serial = ''
+
+    def __init__(self, hw, index=0):
+        self.product = hw.data['Ethernet interface'][index].get('product', '')
+        self.width = hw.data['Ethernet interface'][index].get('width', '')
+        self.vendor = hw.data['Ethernet interface'][index].get('vendor', '')
+        self.version = hw.data['Ethernet interface'][index].get('version', '')
+        self.serial = hw.data['Ethernet interface'][index].get('serial', '')
+       
+class cpu:
+    product = ''
+    vendor = ''
+    size = ''
+    serial = ''
+    
+    def __init__(self, hw, index=0):
+        self.product = hw.data['CPU'][index].get('product', '')
+        self.vendor = hw.data['CPU'][index].get('vendor', '')
+        self.size = hw.data['CPU'][index].get('size', '')
+
+class hardware:
+    """This is the interfaced accessed by the user. It provides
+    hardware data collected through get_hardware.
+    """
+    # FIXME: motherboard, cpu, etc need support to multiple values. Currently
+    # uses index=0
+
+    # Tá certo iniciar o objeto assim, com string em branco? Ele nao vai ser string
+    hw = ''
+    motherboard = ''
+    cpu = ''
+    ethernet_board = ''
+    video_board = ''
+    sound_board = ''
+    bios = ''
+    dvd_reader = ''
+    
+    def __init__(self):
+        self.hw = get_hardware()
+        self.motherboard = motherboard(self.hw, 0)
+        self.cpu = cpu(self.hw, 0)
+        self.ethernet_board = ethernet_board(self.hw, 0)
+        self.video_board = video_board(self.hw, 0)
+        self.sound_board = sound_board(self.hw, 0)
+        self.bios = bios(self.hw) # BIOS is always index=0
+        self.dvd_reader = dvd_reader(self.hw, 0)
+
+if __name__ == '__main__':
+#    a = get_hardware()
+#    print a.data
+    x = hardware()
+    y = x.motherboard
+    print "h", x.motherboard.vendor, x.ethernet_board.product, x.video_board.product, x.video_board.vendor,\
+        x.dvd_reader.product
