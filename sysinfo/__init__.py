@@ -25,8 +25,10 @@ a portable way, for both Linux and Windows.
 #           __init__.py
 #           linux/
 #                   __init__.py
-#                   system.py     network
-#                   services.py   services
+#                   network.py      network class
+#                   services.py     services class
+#                   hardware.py     provides hardware class
+#
 #
 
 import sys
