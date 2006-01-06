@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Provides network information
 """
-
+# THIS FILE IS DEPRECATED. See "system.py"
 import commands 
 import logging
 import re
