@@ -18,6 +18,16 @@ a portable way, for both Linux and Windows.
 # sysinfo.services.smb.winsservers = list
 #
 # All data must be populated, even with empty values.
+#
+# Planned modules strucuture:
+#
+# sysinfo/
+#           __init__.py
+#           linux/
+#                   __init__.py
+#                   system.py     network
+#                   services.py   services
+#
 
 import sys
 
