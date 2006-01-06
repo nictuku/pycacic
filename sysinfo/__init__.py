@@ -34,9 +34,9 @@ a portable way, for both Linux and Windows.
 import sys
 
 if sys.platform == 'linux2':
-    from linux.system import network
+    from linux.network import network
     from linux import hardware
-    from linux import services
+    from linux.services import services
 
 elif sys.platform == 'win32':
     from win32 import network
