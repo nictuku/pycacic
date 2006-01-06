@@ -11,23 +11,26 @@ from sysinfo import services
 from sysinfo import hardware
 from comm import http
 
-# será alterado conforme nova estrutura do sysinfo
+net = sysinfo.network()
+interf = net.interface('eth0')
+
+net = 
 """info =  {
 
- 'te_node_address'          : handleErrorsWithEmptyString(a.getMacAddress, ('eth0')),
+ 'te_node_address'          : interf.mac_address,
  'id_so'                    : '0',
- 'id_ip_rede'               : handleErrorsWithEmptyString(a.getNetwork, ('eth0')),
- 'te_nome_computador'       : handleErrorsWithEmptyString(a.hostname, ()),
- 'te_ip'                    : handleErrorsWithEmptyString(a.getIpAddress, ('eth0')),
+ 'id_ip_rede'               : interf.network,
+ 'te_nome_computador'       : net.hostname,
+ 'te_ip'                    : interf.ip_addresses[0],
  'te_versao_cacic'          : 'pyc',
- 'te_mascara'               : handleErrorsWithEmptyString(a.getNetmask, ('eth0')),
- 'te_gateway'               : handleErrorsWithEmptyString(a.getDefaultGateway, ()),
- 'te_serv_dhcp'             : handleErrorsWithEmptyString(a.getDHCPServer, ('eth0')),
- 'te_nome_host'             : handleErrorsWithEmptyString(a.hostname, ()),
+ 'te_mascara'               : interf.netmask,
+ 'te_gateway'               : net.default_gateway,
+ 'te_serv_dhcp'             : interf.dhcp_server,
+ 'te_nome_host'             : net.hostname,
  'te_origem_mac'            : 'ifconfig',
- 'te_dns_primario'          : handleErrorsWithEmptyString(a.getDNSResolvers, ())[0],
- 'te_dns_secundario'        : handleErrorsWithEmptyString(a.getDNSResolvers, ())[1],
- 'te_dominio_dns'           : handleErrorsWithEmptyString(a.getDNSDomain, ()),
+ 'te_dns_primario'          : net.dnsresolvers[0],
+ 'te_dns_secundario'        : net.dnsresolvers[1],
+ 'te_dominio_dns'           : net.dnsdomain,
  'te_wins_primario'         : handleErrorsUsingList(s.getWinsServers, (), 0),
  'te_wins_secundario'       : handleErrorsUsingList(s.getWinsServers, (), 1),
  'te_workgroup'             : handleErrorsWithEmptyString(s.getWorkgroup, ()),

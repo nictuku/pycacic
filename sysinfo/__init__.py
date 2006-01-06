@@ -14,6 +14,8 @@ a portable way, for both Linux and Windows.
 # sysinfo.network().interface('eth0').mac_address = str
 # sysinfo.network().interface('eth0').product = str
 # sysinfo.network().interface('eth0').vendor = str
+# sysinfo.services.smb.workgroup = str
+# sysinfo.services.smb.winsservers = list
 #
 # All data must be populated, even with empty values.
 

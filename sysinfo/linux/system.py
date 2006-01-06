@@ -107,21 +107,22 @@ class resolv:
 
     def get_dnsresolvers(self):
 
-        r = re.compile( r'(nameserver)\s+(?P<resolver>\S+)\s*'
+        r = re.compile( r'([\W]nameserver)\s+(?P<resolver>\S+)\s*'
                         r'((nameserver)\s+(?P<resolver2>\S+)\s*)?',
                         re.I)
 
         x = r.search(self.resolvconf)
-        resolvers = []
+        #Resolvers must return at least two empty values
+        resolvers = ['','']
         if x:
             resolver = x.group('resolver')
             if resolver:
-                resolvers.append(resolver)
+                resolvers[0]= resolver
 
             resolver2 = x.group('resolver2')
 
             if resolver2:
-                resolvers.append(resolver2)
+                resolvers[1] = resolver2
 
         if resolvers is not None:
             return resolvers
@@ -286,7 +287,11 @@ class interface:
             i = dh[1]
             sp = re.compile('-lf\s+(?P<leases_file>\S+)\s+(?P<interface>[ae]th[\d]+|lo)')
             m = sp.search(dh[1])
-            leases_file = m.group('leases_file')
+            if m:
+                leases_file = m.group('leases_file')
+            else:
+                #FIXME: this should work for other distros and dhclient versions
+                leases_file = '/var/lib/dhcp3/dhclient.leases'
             try:
                 f = open(leases_file)
             except:
