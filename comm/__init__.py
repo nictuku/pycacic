@@ -61,12 +61,11 @@ info =  {
 
 config_info = {
  'te_node_address'          : info['te_node_address'],
- 'id_so'                    : info['id_so',
+ 'id_so'                    : info['id_so'],
  'id_ip_rede'               : info['id_ip_rede'],
  'te_nome_computador'       : info['te_nome_computador'],
  'te_ip'                    : info['te_ip'],
  'te_versao_cacic'          : info['te_versao_cacic'],
-
 }
 
 remote_raw_cfg = config.get_config(info)
