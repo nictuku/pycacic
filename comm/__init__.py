@@ -6,20 +6,21 @@ Currently it uses HTTP which is the only method supported by
 the server.
 """
 
-from sysinfo import network
-from sysinfo import services
-from sysinfo import hardware
-from comm import http
+import sysinfo
+
+import http
 
 net = sysinfo.network()
+smb = sysinfo.services.smb()
+hw =  sysinfo.hardware.HardWare()
+
 interf = net.interface('eth0')
 
-net = 
-"""info =  {
+info =  {
 
  'te_node_address'          : interf.mac_address,
  'id_so'                    : '0',
- 'id_ip_rede'               : interf.network,
+ 'id_ip_rede'               : interf.ip_network,
  'te_nome_computador'       : net.hostname,
  'te_ip'                    : interf.ip_addresses[0],
  'te_versao_cacic'          : 'pyc',
@@ -31,9 +32,9 @@ net =
  'te_dns_primario'          : net.dnsresolvers[0],
  'te_dns_secundario'        : net.dnsresolvers[1],
  'te_dominio_dns'           : net.dnsdomain,
- 'te_wins_primario'         : handleErrorsUsingList(s.getWinsServers, (), 0),
- 'te_wins_secundario'       : handleErrorsUsingList(s.getWinsServers, (), 1),
- 'te_workgroup'             : handleErrorsWithEmptyString(s.getWorkgroup, ()),
+ 'te_wins_primario'         : smb.wins_servers[0],
+ 'te_wins_secundario'       : smb.wins_servers[0],
+ 'te_workgroup'             : smb.workgroup,
  #hardware
  'te_placa_mae_desc'        : hw.data['Motherboard'][0]['product'],
  'te_placa_mae_fabricante'  : hw.data['Motherboard'][0]['vendor'],
@@ -59,4 +60,5 @@ net =
  }
 
 
-"""
+if __name__ == '__main__':
+    print info
