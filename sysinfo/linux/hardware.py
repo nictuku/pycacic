@@ -142,8 +142,9 @@ class get_hardware:
         parser = make_parser()
         handler = LshwDataParser()
         parser.setContentHandler(handler)
-
+        logging.warning("Calling lshw")
         lshwxml = commands.getstatusoutput("export LANGUAGE=C; /usr/sbin/lshw -xml 2>&1|grep -v WARNING")
+        logging.warning("Done with lshw")
         if lshwxml[0] != 0:
             # This would kill this module instance. Should we handle it instead?
             raise LSHWRunError, "could not run /usr/sbin/lshw"
@@ -164,8 +165,6 @@ class get_hardware:
         self.data = handler.HardWare
 
 
-
-hw = get_hardware()
 
 class motherboard:
     product = ''
