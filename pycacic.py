@@ -27,11 +27,6 @@ metodologias e estruturas.
 # x) COMM: Enviar informações se forem novas ou atualizadas
 #
 
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import agent
-
 helloCACIC = agent.http
 info = agent.info
 #print "hw:", hw.__dict__
