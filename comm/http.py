@@ -50,7 +50,7 @@ def putFormatedInfo(putinfo,server,path):
     else:
         feeddata = opener.open(request).read()
     
-    print feeddata
+#    print feeddata
 
 def formatInfo(info_dict):
     """Formats the 'info_dict' to the required format by putFormatedInfo()
@@ -71,7 +71,7 @@ def formatInfo(info_dict):
 
     x = formatInfo(info)
 
-    print x
+    #print x
     te_ip=10.68.8.195&te_node_address=00-0D-60-E0-A6-3C&id_ip_rede=10.68.8.0&\
     id_so=8&te_nome_computador=INF24GO&te_versao_cacic=2.0.0.23&
     """

@@ -74,11 +74,11 @@ class smb:
             wins_string = p.group('wins')
         except:
             logging.error("Could not find WINS server setting")
-
-        if wins_string:
-            wins = wins_string.split(' ')
         else:
-            logging.error("Could not find WINS server setting")
+            if wins_string:
+                wins = wins_string.split(' ')
+            else:
+                logging.error("Could not find WINS server setting")
 
         return wins
 

@@ -12,8 +12,8 @@ import sys
 import http
 import config
 
-get_hard = False
-get_services = False
+get_hard = True
+get_services = True
 
 net = sysinfo.network()
 

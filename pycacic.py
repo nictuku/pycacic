@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """Atualmente utilizado apenas para testar módulos e testar
-metodologias e estruturas
+metodologias e estruturas.
+
+NÃO ESTÁ FUNCIONANDO ATUALMENTE DEVIDO A MUDANÇAS NA ESTRUTURA (COMM).
+
+VEJA TESTE.PY
 """
 
 # Algoritmo:
