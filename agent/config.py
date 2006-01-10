@@ -19,6 +19,40 @@ import sys
 import http
 import sysinfo
 
+sys.path.append('/etc/pycacic')
+
+import cacic
+
+class cfg:
+    """Builds a dict of configuration, in the following
+    order of preference:
+    - command arguments
+    - local configurations
+    - fallback values
+    """
+    cacic_cfg = {}
+
+    def __init__(self):
+
+        self.cacic_cfg = { 'server':'cacic', 
+                       'cache_path':'/var/cache/cacic',
+                       'force_send':0, 
+                       'interface':'eth0', 
+                       'log_path':'/var/log/cacic', 
+                       'test_mode':0, 
+                       'verbose':0,
+        }
+
+        local_parameters = dir(cacic)
+
+        # local values overriding default values
+        for def_parameter, def_value in self.cacic_cfg.iteritems():
+            if def_parameter in local_parameters:
+                self.cacic_cfg[def_parameter] = def_value
+
+cur_cacic = cfg()
+cur_config = cur_cacic.cacic_cfg
+
 def parse_remote_raw_cfg(cfg, cfg_regex, remote_raw_cfg, mode):
     """It parses the remote_raw_cfg string, looking for the cfg_regex and return the
     results found.
@@ -49,7 +83,7 @@ def get_config(data):
         raise Exception, "get_config requires a dict argument"
         return ''
     path = 'cacic2/ws/get_config.php'
-    server = 'cacic'
+    server = cur_config['server']
 
     debug = urllib2.HTTPHandler(debuglevel=0)
 

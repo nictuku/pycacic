@@ -51,7 +51,6 @@ def post_info(putinfo,server,path):
         feeddata = gzipper.read()  
     else:
         feeddata = opener.open(request).read()
-d
     
 #    print feeddata
 
