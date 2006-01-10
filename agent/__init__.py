@@ -18,14 +18,3 @@
 #   along with this program; if not, write to the Free Software
 #   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-import os 
-import logging
-import sys
-
-id = str(os.getuid())
-
-if id != '0':
-    logging.error("In the current version, sysinfo must be called as root.\
-Current uid: " + id)
-    sys.exit(1)
-
