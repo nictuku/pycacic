@@ -27,8 +27,12 @@ metodologias e estruturas.
 # x) COMM: Enviar informações se forem novas ou atualizadas
 #
 
+import agent
+import agent.config
+
 helloCACIC = agent.http
-info = agent.info
+cacic = agent.config.load()
+info = cacic.info
 #print "hw:", hw.__dict__
 # get_config cria a maquina, set_tcp_ip manda infos
 

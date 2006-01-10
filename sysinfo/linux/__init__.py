@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import getpass
+import os 
 import logging
 import sys
 
-if getpass.getuser() != 'root':
-    logging.error("In the current version, sysinfo must be called as root")
+id = str(os.getuid())
+
+if id != '0':
+    logging.error("In the current version, sysinfo must be called as root.\
+Current uid: " + id)
     sys.exit(1)
 
