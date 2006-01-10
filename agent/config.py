@@ -37,6 +37,9 @@ import sys
 import http
 import sysinfo
 
+import StringIO
+import gzip
+
 sys.path.append('/etc/pycacic')
 sys.path.append('/usr/local/etc/pycacic')
 
@@ -66,6 +69,7 @@ class cfg:
     cacic_cfg = {}
 
     def __init__(self):
+        logger.debug("Instantiating agent.cfg")
 
         self.cacic_cfg = { 'server':'cacic', 
                        'cache_path':'/var/cache/cacic',
@@ -79,8 +83,11 @@ class cfg:
         local_parameters = dir(cacic)
 
         # local values overriding default values
+        logger.debug("Loading local config")
         for def_parameter, def_value in self.cacic_cfg.iteritems():
             if def_parameter in local_parameters:
+                logger.debug("Local config: " + def_parameter + "=" + 
+                    def_value)
                 self.cacic_cfg[def_parameter] = def_value
 
 cur_cacic = cfg()
@@ -90,6 +97,7 @@ def parse_remote_raw_cfg(cfg, cfg_regex, remote_raw_cfg, mode):
     """It parses the remote_raw_cfg string, looking for the cfg_regex and return the
     results found.
     """
+    logger.debug("Looking for " + cfg + " setting in the remote config data")
     x = re.compile(cfg_regex, re.I)
     w = x.search(remote_raw_cfg)
 
@@ -101,7 +109,7 @@ def parse_remote_raw_cfg(cfg, cfg_regex, remote_raw_cfg, mode):
             setting = w.groups('mac_invalidos')
             return setting
     else:
-        logging.warning("Could not find the configuration respective to " + cfg + " in the server")
+        logger.warning("Could not find the configuration respective to " + cfg + " in the server")
         return False
 
 def get_config(data):
@@ -110,11 +118,13 @@ def get_config(data):
     
     This dictionary provides enough information required by ws/get_config.php.
     """
+    logging.debug("Getting config data from the CACIC server")
 
     if type(data) is not dict:
-        logging.error("get_config needs a dict argument")
+        logger.error("get_config needs a dict argument")
         raise Exception, "get_config requires a dict argument"
         return ''
+
     path = 'cacic2/ws/get_config.php'
     server = cur_config['server']
 
@@ -123,6 +133,7 @@ def get_config(data):
     url = 'http://' + server + '/' + path
     base64string = base64.encodestring('%s:%s' % ('USER_CACIC', 'PW_CACIC'))[:-1]
 
+    logger.debug("Building request object")
     request = urllib2.Request(url)
     request.add_header('User-Agent', 'AGENTE_CACIC')
     request.add_header('Pragma', 'no-cache')
@@ -131,15 +142,18 @@ def get_config(data):
     request.add_header("Authorization", "Basic %s" % base64string)
     request.add_data(http.formatInfo(data))
     opener = urllib2.build_opener(debug) # +authinfo
+
+    logger.debug("Submitting request to the server")
     f = opener.open(request)
     if f.headers.get('Content-Encoding') == 'gzip':
-        import StringIO
+        logger.debug("Content provided by the server is gzip-encoded.")
         compresseddata = f.read()
         compressedstream = StringIO.StringIO(compresseddata)
-        import gzip
         gzipper = gzip.GzipFile(fileobj=compressedstream)
+        logger.debug("Reading compressed data.")
         feeddata = gzipper.read()
     else:
+        logger.debug("Reading data.")
         feeddata = opener.open(request).read()
 
     return feeddata
@@ -155,21 +169,24 @@ class load:
     config_info = {}
     remote_cfg = {}
     remote_raw_cfg = ''
-    print "config.load loading" 
+    logger.debug("Loading config.load class")
 
     def __init__(self):
-        print "config.load instance" 
+        logger.debug("Instantiating config.load")
 
+        logger.debug("Getting network data from sysinfo.network()")
         net = sysinfo.network()
 
         if get_services:
+            logger.debug("Getting smb data from sysinfo.services.smb()")
             smb = sysinfo.services.smb()
 
         if get_hard:
+            logger.debug("Getting hardware data from sysinfo.hardware()")
             hw =  sysinfo.hardware()
 
         interf = net.interface('eth0')
-
+        logger.debug("Populating 'config_info' dictionary")
         self.config_info = {
          'te_node_address'          : interf.mac_address,
          'id_so'                    : '0',
@@ -181,6 +198,7 @@ class load:
         }
 
         if get_services and get_hard:
+            logger.debug("Populating 'info' dictionary")
 
             self.info =  {
             
@@ -225,6 +243,7 @@ class load:
              }
 
         self.remote_raw_cfg = get_config(self.config_info)
+        logger.debug("remote_raw_cfg populated")
 
         #print "Remote raw config:", remote_raw_cfg
 

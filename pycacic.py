@@ -59,6 +59,7 @@ formatter = logging.Formatter(
  )
 ch.setFormatter(formatter)
 logger.addHandler(ch)
+
 #logger.debug("debug message")
 #logger.info("info message")
 #logger.warn("warn message")
