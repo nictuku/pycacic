@@ -9,7 +9,7 @@ It tries to follow the recommendations of diveintopython[1], including:
 [1] http://diveintopython.org/http_web_services/http_features.html
 """
 
-def putFormatedInfo(putinfo,server,path):
+def post_info(putinfo,server,path):
     """Send pre-formated 'putinfo' string  to the 'destination' in the http server
     """
     #FIXME: quebrar essa função em outras
@@ -51,6 +51,7 @@ def putFormatedInfo(putinfo,server,path):
         feeddata = gzipper.read()  
     else:
         feeddata = opener.open(request).read()
+d
     
 #    print feeddata
 

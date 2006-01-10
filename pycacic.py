@@ -36,9 +36,9 @@ info = cacic.info
 #print "hw:", hw.__dict__
 # get_config cria a maquina, set_tcp_ip manda infos
 
-helloCACIC.putFormatedInfo(info,'cacic','cacic2/ws/get_config.php')
-helloCACIC.putFormatedInfo(info,'cacic','cacic2/ws/set_tcp_ip.php')
-helloCACIC.putFormatedInfo(info,'cacic','cacic2/ws/set_hardware.php')
+helloCACIC.post_info(info,'cacic','cacic2/ws/get_config.php')
+helloCACIC.post_info(info,'cacic','cacic2/ws/set_tcp_ip.php')
+helloCACIC.post_info(info,'cacic','cacic2/ws/set_hardware.php')
 
 
 print "weee, foi"
