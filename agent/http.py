@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """Provides methods to communicate with the CACIC web server using HTTP
-We try to follow the recommendations of diveintopython:
-http://diveintopython.org/http_web_services/http_features.html, including:
+
+It tries to follow the recommendations of diveintopython[1], including:
 - Compression
 - User-agents
+
+[1] http://diveintopython.org/http_web_services/http_features.html
 """
 
 def putFormatedInfo(putinfo,server,path):

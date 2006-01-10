@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Gestor de configurações do CACIC.
+"""Configurations manager and interface to sysinfo.
+
+Basically this is the CACIC agent core.
+
+Its job is to get the configuration from the server,
+from local files and parameters, then populate informational
+objects that will be accessed by other modules.
 """
 
 import re
@@ -14,7 +20,9 @@ import http
 import sysinfo
 
 def parse_remote_raw_cfg(cfg, cfg_regex, remote_raw_cfg, mode):
-
+    """It parses the remote_raw_cfg string, looking for the cfg_regex and return the
+    results found.
+    """
     x = re.compile(cfg_regex, re.I)
     w = x.search(remote_raw_cfg)
 
@@ -30,10 +38,12 @@ def parse_remote_raw_cfg(cfg, cfg_regex, remote_raw_cfg, mode):
         return False
 
 def get_config(data):
-    """Consulta no servidor a atual configuração da rede atual
-    "data" deve ser um dicionário contendo certas informações
-    essenciais ao ws/get_config.php
+    """Asks the server the current setting for this computer, as explicited in the
+    'data' dictionary. 
+    
+    This dictionary provides enough information required by ws/get_config.php.
     """
+
     if type(data) is not dict:
         logging.error("get_config needs a dict argument")
         raise Exception, "get_config requires a dict argument"
@@ -66,6 +76,9 @@ def get_config(data):
         feeddata = opener.open(request).read()
 
     return feeddata
+
+# FIXME: these should come from either local configuration or set
+# by the calling method, as required.
 
 get_hard = True
 get_services = True
