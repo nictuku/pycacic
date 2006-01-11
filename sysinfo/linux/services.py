@@ -49,13 +49,13 @@ class smb:
            try:
                 f = open('/etc/smb/smb.conf','r')
            except:
-                logging.error("Error while opening smb.conf")
+                logger.error("Error while opening smb.conf")
                 return ''
 
         smbconf = f.read()
         f.close()
         if not smbconf:
-                logging.error("Empty smb.conf")
+                logger.error("Empty smb.conf")
                 return ''
         else:
                 return smbconf
@@ -91,12 +91,12 @@ class smb:
         try:
             wins_string = p.group('wins')
         except:
-            logging.error("Could not find WINS server setting")
+            logger.error("Could not find WINS server setting")
         else:
             if wins_string:
                 wins = wins_string.split(' ')
             else:
-                logging.error("Could not find WINS server setting")
+                logger.error("Could not find WINS server setting")
 
         return wins
 

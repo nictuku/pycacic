@@ -26,7 +26,7 @@ logger = logging.getLogger("sysinfo.hardware.linux.init")
 id = str(os.getuid())
 
 if id != '0':
-    logging.error("In the current version, sysinfo must be called as root.\
+    logger.error("In the current version, sysinfo must be called as root.\
 Current uid: " + id)
     sys.exit(1)
 

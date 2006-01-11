@@ -110,7 +110,7 @@ class resolv:
         try:
             r = open('/etc/resolv.conf','r')
         except:
-            logging.error("Error while reading /etc/resolv.conf")
+            logger.error("Error while reading /etc/resolv.conf")
             return ''
         else:
             return r.read()
@@ -189,10 +189,10 @@ class misc:
                 if w.group('def_gateway'):
                     return numToDottedQuad(hex2dec(w.group('def_gateway')))
                 else:
-                    logging.error("Could not find def gateway info in /proc") 
+                    logger.error("Could not find def gateway info in /proc") 
                     return None
             else:
-                logging.error("Could not find def gateway info in /proc") 
+                logger.error("Could not find def gateway info in /proc") 
                 return None
 
 
@@ -204,7 +204,7 @@ class misc:
         routebin = commands.getstatusoutput("export LANGUAGE=C; /usr/bin/env route -n")
 
         if routebin[0] != 0:
-            logging.error("Error while trying to run route")
+            logger.error("Error while trying to run route")
             return false
         h = re.compile('\n0.0.0.0\s+(?P<def_gateway>[\w.]+)\s+')
         w = h.search(routebin[1])
@@ -214,7 +214,7 @@ class misc:
         if def_gateway:
             return def_gateway
         
-        logging.error("Could not find default gateway by running route")
+        logger.error("Could not find default gateway by running route")
         return ''
 
 class interface:
@@ -311,7 +311,7 @@ class interface:
         dh = commands.getstatusoutput('ps aux|grep dhclient')
 
         if dh[0] != 0:
-            logging.error("Erro buscando dhclient em execução")
+            logger.error("Erro buscando dhclient em execução")
             return ''
         else:
             i = dh[1]
@@ -325,7 +325,7 @@ class interface:
             try:
                 f = open(leases_file)
             except:
-                logging.error("Could not open leases_file (tried from " + leases_file + " )")
+                logger.error("Could not open leases_file (tried from " + leases_file + " )")
                 return ''
         dhcp = f.read()
         f.close()

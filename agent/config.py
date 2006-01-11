@@ -78,8 +78,8 @@ class cfg:
         logger.debug("Loading local config")
         for def_parameter, def_value in self.cacic_cfg.iteritems():
             if def_parameter in local_parameters:
-                logger.debug("Local config: " + def_parameter + "=" + 
-                    def_value)
+                logger.debug("Local config: " + str(def_parameter) + "=" + 
+                    str(def_value))
                 self.cacic_cfg[def_parameter] = def_value
 
 cur_cacic = cfg()
@@ -110,7 +110,7 @@ def get_config(data):
     
     This dictionary provides enough information required by ws/get_config.php.
     """
-    logging.debug("Getting config data from the CACIC server")
+    logger.debug("Getting config data from the CACIC server")
 
     if type(data) is not dict:
         logger.error("get_config needs a dict argument")

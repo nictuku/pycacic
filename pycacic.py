@@ -48,16 +48,25 @@ metodologias e estruturas.
 
 import logging
 
+format = "%(asctime)s cacic[%(process)d] %(levelname)s %(name)s:%(lineno)d: %(message)s"
+#format = "%(asctime)s %(levelname)s %(message)s"
+
 logger = logging.getLogger("cacic")
 logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter(
- "%(asctime)s %(name)s %(levelname)s %(message)s"
- )
+formatter = logging.Formatter(format)
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
+sysinfo_logger = logging.getLogger("sysinfo")
+sysinfo_logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter(format)
+ch.setFormatter(formatter)
+sysinfo_logger.addHandler(ch)
+  
 
 logger.info("Starting PyCACIC.")
 logger.debug("Loading agent.http")

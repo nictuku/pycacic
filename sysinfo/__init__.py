@@ -57,14 +57,6 @@ import sys
 import logging
 
 logger = logging.getLogger("sysinfo")
-logger.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter(
- "%(asctime)s %(name)s %(levelname)s %(message)s"
- )
-ch.setFormatter(formatter)
-logger.addHandler(ch)
 
 if sys.platform == 'linux2':
     logger.info("Loading sysinfo for Linux")

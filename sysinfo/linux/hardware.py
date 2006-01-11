@@ -163,12 +163,12 @@ class get_hardware:
         parser = make_parser()
         handler = LshwDataParser()
         parser.setContentHandler(handler)
-        logging.info("Calling lshw.")
+        logger.info("Calling lshw.")
         lshwxml = commands.getstatusoutput("export LANGUAGE=C; /usr/bin/env lshw -xml 2>&1|grep -v WARNING")
-        logging.info("Done with lshw.")
+        logger.info("Done with lshw.")
         if lshwxml[0] != 0:
             # This would kill this module instance. Should we handle it instead?
-            logging.error("Could not run lshw")
+            logger.error("Could not run lshw")
             raise LSHWRunError, "could not run lshw"
         else:
             xmldata = lshwxml[1]
@@ -323,7 +323,7 @@ class hardware:
     memory = ''
     
     def __init__(self):
-        logging.debug("Created new instance for the 'hardware' class")
+        logger.debug("Created new instance for the 'hardware' class")
         self.hw = get_hardware()
         self.motherboard = motherboard(self.hw, 0)
         self.cpu = cpu(self.hw, 0)
