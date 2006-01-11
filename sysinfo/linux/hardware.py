@@ -30,6 +30,8 @@ import logging
 import string 
 import sys
 
+logger = logging.getLogger("sysinfo.linux.hardware")
+
 # FIXME: teste feito em MDS500 mostrou que lshw às vezes gera um XML com caracteres
 # estranhos, como ^E^D^D^C
 
@@ -43,6 +45,7 @@ class LshwDataParser(ContentHandler):
     """
 
     def __init__(self):
+        logger.debug("Created new instance for the 'LshwDataParser' class")
         # List of dicts containing Nodes data
         self.Nodes = []
         # Dict containing current tag data.
@@ -160,12 +163,13 @@ class get_hardware:
         parser = make_parser()
         handler = LshwDataParser()
         parser.setContentHandler(handler)
-        logging.warning("Calling lshw")
-        lshwxml = commands.getstatusoutput("export LANGUAGE=C; /usr/sbin/lshw -xml 2>&1|grep -v WARNING")
-        logging.warning("Done with lshw")
+        logging.info("Calling lshw.")
+        lshwxml = commands.getstatusoutput("export LANGUAGE=C; /usr/bin/env lshw -xml 2>&1|grep -v WARNING")
+        logging.info("Done with lshw.")
         if lshwxml[0] != 0:
             # This would kill this module instance. Should we handle it instead?
-            raise LSHWRunError, "could not run /usr/sbin/lshw"
+            logging.error("Could not run lshw")
+            raise LSHWRunError, "could not run lshw"
         else:
             xmldata = lshwxml[1]
 
@@ -319,6 +323,7 @@ class hardware:
     memory = ''
     
     def __init__(self):
+        logging.debug("Created new instance for the 'hardware' class")
         self.hw = get_hardware()
         self.motherboard = motherboard(self.hw, 0)
         self.cpu = cpu(self.hw, 0)

@@ -44,14 +44,6 @@ sys.path.append('/etc/pycacic')
 sys.path.append('/usr/local/etc/pycacic')
 
 logger = logging.getLogger("cacic.agent.config")
-logger.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter(
- "%(asctime)s %(name)s %(levelname)s %(message)s"
- )
-ch.setFormatter(formatter)
-logger.addHandler(ch)
 
 try:
     import cacic

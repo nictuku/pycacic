@@ -22,6 +22,7 @@ import os
 import logging
 import sys
 
+logger = logging.getLogger("sysinfo.hardware.linux.init")
 id = str(os.getuid())
 
 if id != '0':

@@ -45,8 +45,6 @@ metodologias e estruturas.
 # x) COMM: Enviar informações se forem novas ou atualizadas
 #
 
-import agent
-import agent.config
 
 import logging
 
@@ -60,13 +58,13 @@ formatter = logging.Formatter(
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
-#logger.debug("debug message")
-#logger.info("info message")
-#logger.warn("warn message")
-#logger.error("error message")
-#logger.critical("critical message")
 
+logger.info("Starting PyCACIC.")
 logger.debug("Loading agent.http")
+
+import agent
+import agent.config
+
 
 helloCACIC = agent.http
 

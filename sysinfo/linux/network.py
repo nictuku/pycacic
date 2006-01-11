@@ -28,6 +28,8 @@ import socket
 import struct
 import sys
 
+logger = logging.getLogger("sysinfo.linux.network")
+
 # auxiliary functions
 def hex2dec(s):
     """Returns the integer value of a hexadecimal string s
@@ -67,11 +69,13 @@ class ifconfig:
     interf_dict = {}
 
     def __init__(self):
+        logger.info("Reading ifconfig data")
         # Sets 'ifconfig' 
-        ifconfig = commands.getstatusoutput("export LANGUAGE=C; /sbin/ifconfig")
+        ifconfig = commands.getstatusoutput("export LANGUAGE=C; /usr/bin/env ifconfig")
         if ifconfig[0] != 0:
             # This would kill this module instance.
-            raise IfconfigError, "could not run /sbin/ifconfig"
+            logger.error("Could not run ifconfig")
+            raise IfconfigError, "could not run ifconfig"
         else:
             i = ifconfig[1]
             sp = re.compile('([ae]th[\d]+|lo) ')
@@ -102,11 +106,12 @@ class resolv:
         self.dnsresolvers = self.get_dnsresolvers()
 
     def get_resolvconf(self):
+        logger.debug("Getting DNS resolvers data")
         try:
             r = open('/etc/resolv.conf','r')
         except:
+            logging.error("Error while reading /etc/resolv.conf")
             return ''
-            logging.warning("Erro ao ler /etc/resolv.conf")
         else:
             return r.read()
             r.close()
@@ -170,10 +175,12 @@ class misc:
     def get_default_gateway_from_proc(self):
         """"Returns the current default gateway, reading that from /proc'
         """
+        logger.debug("Reading default gateway information from /proc")
         try:
             f = open('/proc/net/route','r')
             route = f.read()
         except:
+            logger.error("Failed to read def gateway from /proc")
             return None
         else:
             h = re.compile('\n(?P<interface>\w+)\s+00000000\s+(?P<def_gateway>[\w]+)\s+')
@@ -182,16 +189,19 @@ class misc:
                 if w.group('def_gateway'):
                     return numToDottedQuad(hex2dec(w.group('def_gateway')))
                 else:
-                   return None
+                    logging.error("Could not find def gateway info in /proc") 
+                    return None
             else:
+                logging.error("Could not find def gateway info in /proc") 
                 return None
-            logging.warning('Could not read default gateway from /proc')
+
 
     def get_default_gateway_from_bin_route(self):
         """Get Default Gateway from '/sbin/route -n
         Called by get_default_gateway and is only used if could not get that from /proc
         """
-        routebin = commands.getstatusoutput("export LANGUAGE=C; /sbin/route -n")
+        logger.debug("Reading default gateway information from route binary")
+        routebin = commands.getstatusoutput("export LANGUAGE=C; /usr/bin/env route -n")
 
         if routebin[0] != 0:
             logging.error("Error while trying to run route")
@@ -203,6 +213,9 @@ class misc:
 
         if def_gateway:
             return def_gateway
+        
+        logging.error("Could not find default gateway by running route")
+        return ''
 
 class interface:
     """Retrieves interface specific information

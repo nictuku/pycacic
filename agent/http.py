@@ -27,15 +27,19 @@ It tries to follow the recommendations of diveintopython[1], including:
 [1] http://diveintopython.org/http_web_services/http_features.html
 """
 
+import urllib2
+import httplib
+import base64
+import logging
+
+logger = logging.getLogger("cacic.agent.http")
+
 def post_info(putinfo,server,path):
     """Send pre-formated 'putinfo' string  to the 'destination' in the http server
     """
     #FIXME: quebrar essa função em outras
 
-    import urllib2
-    import httplib
-    import base64
-
+    logging.debug("Posting info to the CACIC server")
     debug = urllib2.HTTPHandler(debuglevel=0)
 
     url = 'http://' + server + '/' + path
@@ -43,6 +47,7 @@ def post_info(putinfo,server,path):
     #FIXME: isso deve ser configuravel
     base64string = base64.encodestring('%s:%s' % ('USER_CACIC', 'PW_CACIC'))[:-1]
 
+    logger.debug("Building request object")
     request = urllib2.Request(url) 
     request.add_header('User-Agent', 'AGENTE_CACIC')   
     request.add_header('Pragma', 'no-cache')   
@@ -57,6 +62,8 @@ def post_info(putinfo,server,path):
 #   authinfo.add_password(None, 'cacic', 'USER_CACIC', 'PW_CACIC')
 
     opener = urllib2.build_opener(debug) # +authinfo
+
+    logger.debug("POSTing request to the server")
     f = opener.open(request)
 
     #FIXME: criar funcao para "handledata"

@@ -54,11 +54,24 @@ a portable way, for both Linux and Windows.
 #
 
 import sys
+import logging
+
+logger = logging.getLogger("sysinfo")
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter(
+ "%(asctime)s %(name)s %(levelname)s %(message)s"
+ )
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 if sys.platform == 'linux2':
+    logger.info("Loading sysinfo for Linux")
     from linux.network import network
     from linux.hardware import hardware
     from linux import services
 
 elif sys.platform == 'win32':
+    logger.info("Loading sysinfo for win32")
     from win32 import network
