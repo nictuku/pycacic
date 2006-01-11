@@ -166,9 +166,33 @@ class load:
     def __init__(self):
         logger.debug("Instantiating config.load")
 
+        interf = net.interface('eth0')
+        self.remote_raw_cfg = get_config(self.config_info)
+        logger.debug("remote_raw_cfg populated")
+
+        #print "Remote raw config:", remote_raw_cfg
+
+        self.remote_cfg['patrimony_collection'] = parse_remote_raw_cfg(
+         'patrimony_collection', '<cs_coleta_patrimonio>\s*s\s*<\/cs_coleta_patrimonio>', 
+         self.remote_raw_cfg, 'boolean')
+
+        self.remote_cfg['hardware_collection'] = parse_remote_raw_cfg(
+         'hardware_collection', '<cs_coleta_hardware>\s*S\s*<\/cs_coleta_hardware>', 
+         self.remote_raw_cfg, 'boolean')
+
+        self.remote_cfg['disk_collection'] = parse_remote_raw_cfg(
+         'disk_collection', '<cs_coleta_unid_disc>\s*S\s*<\/cs_coleta_unid_disc>', 
+         self.remote_raw_cfg, 'boolean')
+
+        self.remote_cfg['ignore_macs'] = parse_remote_raw_cfg(
+         'ignore_macs', 
+          '<te_enderecos_mac_invalidos>(?P<mac_invalidos>[^<]*)<\/te_enderecos_mac_invalidos>',
+         self.remote_raw_cfg, 'string')
+
         logger.debug("Getting network data from sysinfo.network()")
         net = sysinfo.network()
 
+        # FIXME: if interf.mac_address is not in remote_cfg['ignore_macs']
         if get_services:
             logger.debug("Getting smb data from sysinfo.services.smb()")
             smb = sysinfo.services.smb()
@@ -177,7 +201,7 @@ class load:
             logger.debug("Getting hardware data from sysinfo.hardware()")
             hw =  sysinfo.hardware()
 
-        interf = net.interface('eth0')
+
         logger.debug("Populating 'config_info' dictionary")
         self.config_info = {
          'te_node_address'          : interf.mac_address,
@@ -233,27 +257,5 @@ class load:
             # 'te_mem_ram_desc'          :
              'te_placa_rede_desc'       : hw.ethernet_board.vendor + hw.ethernet_board.product
              }
-
-        self.remote_raw_cfg = get_config(self.config_info)
-        logger.debug("remote_raw_cfg populated")
-
-        #print "Remote raw config:", remote_raw_cfg
-
-        self.remote_cfg['patrimony_collection'] = parse_remote_raw_cfg(
-         'patrimony_collection', '<cs_coleta_patrimonio>\s*s\s*<\/cs_coleta_patrimonio>', 
-         self.remote_raw_cfg, 'boolean')
-
-        self.remote_cfg['hardware_collection'] = parse_remote_raw_cfg(
-         'hardware_collection', '<cs_coleta_hardware>\s*S\s*<\/cs_coleta_hardware>', 
-         self.remote_raw_cfg, 'boolean')
-
-        self.remote_cfg['disk_collection'] = parse_remote_raw_cfg(
-         'disk_collection', '<cs_coleta_unid_disc>\s*S\s*<\/cs_coleta_unid_disc>', 
-         self.remote_raw_cfg, 'boolean')
-
-        self.remote_cfg['ignore_macs'] = parse_remote_raw_cfg(
-         'ignore_macs', 
-          '<te_enderecos_mac_invalidos>(?P<mac_invalidos>[^<]*)<\/te_enderecos_mac_invalidos>',
-         self.remote_raw_cfg, 'string')
 
 

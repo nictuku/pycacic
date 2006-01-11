@@ -79,6 +79,8 @@ helloCACIC = agent.http
 
 logger.debug("Loading agent.config.load()")
 cacic = agent.config.load()
+print "config:", cacic.remote_cfg
+#sys.exit(1)
 info = cacic.info
 #print "hw:", hw.__dict__
 # get_config cria a maquina, set_tcp_ip manda infos
