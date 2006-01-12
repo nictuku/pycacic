@@ -166,6 +166,7 @@ class load:
     def __init__(self):
         logger.debug("Instantiating config.load")
 
+        net = sysinfo.network()
         interf = net.interface('eth0')
         self.remote_raw_cfg = get_config(self.config_info)
         logger.debug("remote_raw_cfg populated")
@@ -190,7 +191,6 @@ class load:
          self.remote_raw_cfg, 'string')
 
         logger.debug("Getting network data from sysinfo.network()")
-        net = sysinfo.network()
 
         # FIXME: if interf.mac_address is not in remote_cfg['ignore_macs']
         if get_services:
