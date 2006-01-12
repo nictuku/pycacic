@@ -205,9 +205,12 @@ class load:
             logger.debug("Getting hardware data from sysinfo.hardware()")
             hw =  sysinfo.hardware()
             # Necessary changes
+            # Update: sysinfo does not provide the unit anymore, so we don't
+            # need the .replace('', '') anymore.
             ram_size = str(int(hw.memory.size.replace(' bytes', '')) / 1048576)
             video_ram_size = str(int(hw.video_board.memory.replace(' bytes',
             '')) / 1048576)
+            cpu_frequency = str(int(hw.cpu.frequency) / 1048576)
            
 
         logger.debug("Populating 'config_info' dictionary")
@@ -250,7 +253,7 @@ class load:
              'te_cpu_serial'            : '',
              'te_cpu_desc'              : hw.cpu.product,
              'te_cpu_fabricante'        : hw.cpu.vendor,
-             'te_cpu_freq'              : hw.cpu.frequency,
+             'te_cpu_freq'              : cpu_frequency,
              'te_placa_video_desc'      : hw.video_board.product,
              'qt_placa_video_mem'       : video_ram_size,
              'qt_placa_video_cores'     : hw.video_board.width,
