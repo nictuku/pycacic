@@ -24,6 +24,8 @@
 import re
 import logging
 
+logger = logging.getLogger("sysinfo.linux.services")
+
 class smb:
     """Provides information from the SMB service using information from the smb.conf file.
     That may not be an exact science, but it's the best method available.
