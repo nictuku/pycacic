@@ -196,11 +196,6 @@ class load:
 
         logger.debug("Getting network data from sysinfo.network()")
 
-        # FIXME: if interf.mac_address is not in remote_cfg['ignore_macs']
-        if get_services:
-            logger.debug("Getting smb data from sysinfo.services.smb()")
-            smb = sysinfo.services.smb()
-
         if get_hard:
             logger.debug("Getting hardware data from sysinfo.hardware()")
             hw =  sysinfo.hardware()
@@ -211,11 +206,18 @@ class load:
             video_ram_size = str(int(hw.video_board.memory.replace(' bytes',
             '')) / 1048576)
             cpu_frequency = str(int(hw.cpu.frequency) / 1048576)
+            # CACIC used - as a separator for MAC's
+            mac_address = interf.mac_address.replace(':','-')
            
+        # FIXME: if mac_address is not in remote_cfg['ignore_macs']
+        if get_services:
+            logger.debug("Getting smb data from sysinfo.services.smb()")
+            smb = sysinfo.services.smb()
+
 
         logger.debug("Populating 'config_info' dictionary")
         self.config_info = {
-         'te_node_address'          : interf.mac_address,
+         'te_node_address'          : mac_address,
          'id_so'                    : '0',
          'id_ip_rede'               : interf.ip_network,
          'te_nome_computador'       : net.hostname,
@@ -229,7 +231,7 @@ class load:
 
             self.info =  {
             
-             'te_node_address'          : interf.mac_address,
+             'te_node_address'          : mac_address,
              'id_so'                    : '0',
              'id_ip_rede'               : interf.ip_network,
              'te_nome_computador'       : net.hostname,
