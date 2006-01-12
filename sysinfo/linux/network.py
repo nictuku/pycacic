@@ -311,7 +311,7 @@ class interface:
         dh = commands.getstatusoutput('ps aux|grep dhclient')
 
         if dh[0] != 0:
-            logger.error("Erro buscando dhclient em execução")
+            logger.error("Error finding a running dhclient")
             return ''
         else:
             i = dh[1]
@@ -350,7 +350,23 @@ class interface:
         # Shows the last lease
         return server
 
-class network(resolv, ifconfig, misc):
+class last_logon:
+
+    user = ''
+
+    def __init__(self):
+        self.user = self.get_last_logon()
+
+    def get_last_logon(self):
+        logger.debug("Getting last logon")
+        l = commands.getstatusoutput('export LANGUAGE=C; /usr/bin/env last')
+        if l[0] != 0:
+            logger.error("Error while running 'last'")
+            return ''
+        else:
+            return 'USUARIO-AQUI'
+                                        
+class network(resolv, ifconfig, misc, last_logon):
     """This is the stuff users will access. It inherits data from other 'os' 
     classes so users can access information like network.dnsdomain.
     """
@@ -359,10 +375,10 @@ class network(resolv, ifconfig, misc):
         resolv.__init__(self)
         ifconfig.__init__(self)
         misc.__init__(self)
-        self.interface = interface
+        last_logon.__init__(self)
         
-
-
+        self.interface = interface
+        self.last_logon = last_logon     
 
 if __name__ == '__main__':
 
@@ -371,4 +387,4 @@ if __name__ == '__main__':
     #print i.interf_dict
     #print d.dnsdomain, d.dnsresolvers
     b = g.interface('eth0')
-    print "teste", g.interfaces, b.ip_addresses
+    print "teste", g.interfaces, b.ip_addresses, g.last_logon.user
