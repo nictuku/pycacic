@@ -99,7 +99,10 @@ class smb:
                 wins = wins_string.split(' ')
             else:
                 logger.error("Could not find WINS server setting")
-
+        l = len(wins)
+        repeat = 2 - l
+        for foo in range(repeat):
+            wins.append('')
         return wins
 
 if __name__ == '__main__':

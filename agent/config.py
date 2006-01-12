@@ -245,7 +245,7 @@ class load:
              'te_dominio_dns'           : net.dnsdomain,
              'te_dominio_windows'       : last.user,
              'te_wins_primario'         : smb.wins_servers[0],
-             'te_wins_secundario'       : smb.wins_servers[0],
+             'te_wins_secundario'       : smb.wins_servers[1],
              'te_workgroup'             : smb.workgroup,
              #hardware
              'te_placa_mae_desc'        : hw.motherboard.product,
