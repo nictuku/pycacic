@@ -204,7 +204,11 @@ class load:
         if get_hard:
             logger.debug("Getting hardware data from sysinfo.hardware()")
             hw =  sysinfo.hardware()
-
+            # Necessary changes
+            ram_size = str(int(hw.memory.size.replace(' bytes', '')) / 1048576)
+            video_ram_size = str(int(hw.video_board.memory.replace(' bytes',
+            '')) / 1048576)
+           
 
         logger.debug("Populating 'config_info' dictionary")
         self.config_info = {
@@ -248,17 +252,17 @@ class load:
              'te_cpu_fabricante'        : hw.cpu.vendor,
              'te_cpu_freq'              : hw.cpu.frequency,
              'te_placa_video_desc'      : hw.video_board.product,
-             'qt_placa_video_mem'       : hw.video_board.memory,
+             'qt_placa_video_mem'       : video_ram_size,
              'qt_placa_video_cores'     : hw.video_board.width,
              'te_placa_som_desc'        : hw.sound_board.product,
-             'te_teclado_desc'          : '',
+             'te_teclado_desc'          : hw.keyboard.model,
              'te_bios_desc'             : hw.bios.vendor + hw.bios.version,
              'te_bios_fabricante'       : hw.bios.vendor,
              'te_bios_data'             : hw.bios.version,
              'te_cdrom_desc'            : hw.dvd_reader.product,
              'te_modem_desc'            : hw.modem.vendor + hw.modem.product,
              'te_mouse_desc'            : hw.mouse.product + hw.mouse.vendor,
-             'qt_mem_ram'               : hw.memory.size,
+             'qt_mem_ram'               : ram_size,
             # 'te_mem_ram_desc'          :
              'te_placa_rede_desc'       : hw.ethernet_board.vendor + hw.ethernet_board.product
              }

@@ -62,13 +62,14 @@ class LshwDataParser(ContentHandler):
         self.CurrentTag.append({'name' : tag })
         # If it has a representation unit, set it.
         # FIXME: this is returning the WRONG unit
-        try:
-            unit = attrs.get('units')
-        except:
-            self.CurrentTagUnits = ''
-        else:
-            if unit:
-                self.CurrentTagUnits = unit
+        # Disabled it temporarily until needed
+        #try:
+        #    unit = attrs.get('units')
+        #except:
+        #    self.CurrentTagUnits = ''
+        #else:
+        #    if unit:
+        #        self.CurrentTagUnits = unit
 
         if tag == 'node':
 
@@ -186,7 +187,25 @@ class get_hardware:
 #        parser.parse('lshw.xml')
         self.data = handler.HardWare
 
-
+class keyboard:
+    """Get keyboard info from /proc/bus/input/devices
+    """
+    model = ''
+    def __init__(self):
+        logger.debug("Getting keyboard data") 
+    
+        try:
+            devices_file = open('/proc/bus/input/devices', 'r')
+        except:
+            pass
+        else:
+            input = devices_file.readlines()
+            for line in input:
+                if 'keyboard' in line:
+                    k1 = line.replace('N: Name=','')
+                    k2 = k1.replace('"','')
+                    self.model = k2
+            
 
 class motherboard:
     product = ''
@@ -265,6 +284,7 @@ class video_board:
         if hw.data.has_key('VGA compatible controller'):
             self.product = hw.data['VGA compatible controller'][index].get('product')
             self.memory = hw.data['VGA compatible controller'][index].get('size')
+            print "video mem", self.memory
             self.width = hw.data['VGA compatible controller'][index].get('width')
             self.vendor = hw.data['VGA compatible controller'][index].get('vendor')
 
@@ -321,6 +341,7 @@ class hardware:
     modem = ''
     mouse = ''
     memory = ''
+    keyboard = ''
     
     def __init__(self):
         logger.debug("Created new instance for the 'hardware' class")
@@ -335,6 +356,7 @@ class hardware:
         self.modem = modem(self.hw, 0)
         self.mouse = mouse(self.hw, 0)
         self.memory = memory(self.hw)
+        self.keyboard = keyboard()
 
 if __name__ == '__main__':
 #    a = get_hardware()
