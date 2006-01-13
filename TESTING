@@ -1,0 +1,153 @@
+PyCACIC - Versão de desenvolvimento
+
+
+VERSÃO DE RASCUNHO 
+SUJEITO A REVISÃOY
+
+
+
+
+Instruções para beta-testing
+============================
+
+Projeto CACIC
+-------------
+
+Desenvolvido pela Dataprev e disponibilizado sob a licença GPL, o CACIC é um
+software brasileiro criado para possibilitar a administração de recursos de
+informática em uma instituição, gerando relatórios completos sobre seu parque
+computacional. 
+
+Adotado em diversos países, o CACIC possui uma comunidade dinâmica e
+participativa, liderada pela Secretaria de Logística e Tecnologia da Informação
+do Ministério do Planejamento, responsável pela coordenação do projeto.
+
+PyCACIC
+-------
+
+O PyCACIC é uma versão multi-plataforma em desenvolvimento do agente CACIC,
+escrita em Python. 
+
+Esse agente utiliza uma biblioteca de coleta de informações de sistema
+(hardware rede e serviços) criada para o projeto, mas que pode beneficiar
+outros softwares que precisem obter informações detalhadas do computador, 
+indepente do sistema operacional sobre o qual está sendo executado.
+
+Beta Testing:
+-------------
+
+Muitos colaboladores da comunidade se ofereceram a ajudar o projeto pycacic.
+Sendo assim, e considerando que a biblioteca "sysinfo" precisa ser
+testada no Linux, formulou-se este documento como sugestão de metodologia para
+este trabalho.
+
+Numa próxima fase testaremos também o sysinfo para Windows.
+
+As seguintes coletas foram implementadas até agora, as quais devem estar de
+acordo com os dados efetivos do computador.
+
+
+Rede:
+-----
+Nome do Host
+Serv. Wins Primário
+Domínio DNS
+Serv. Wins Secundario
+Endereço TCP/IP
+Serv. DNS Primário
+Mascara de Rede
+Serv. DNS Secundario
+Endereço de Rede
+Servidor DHCP
+Gateway
+
+Hardware:
+---------
+Descrição da CPU
+Freqüência da CPU
+Fabricante da CPU
+Placa Mãe
+Fabricante da Placa Mãe
+Placa de Vídeo
+Quant. Cores placa de Vídeo
+Mem. da Placa de Vídeo
+Memória RAM
+Descrição da BIOS
+Fabricante da BIOS
+Placa de Rede
+Node Address Placa de Rede
+Placa de Som
+Modem
+CDROM
+Teclado
+Mouse
+
+Opções configuráveis:
+---------------------
+
+Apenas a opção "server" é configurável atualmente.
+
+Crie um arquivo /usr/local/etc/pycacic/cacic.py ou /etc/pycacic/cacic.py com o
+seguinte conteúdo:
+
+server = '<servidor do cacic>'
+
+Como executar os testes:
+------------------------
+
+Ainda não há um modo de testes, como há no agente em perl. Portanto será necessário
+efetivamente enviar as informações para o gerente e, na página do CACIC,
+verificar se as coletas de hardware estão "batendo" com a realidade.
+
+Estando no diretório onde se encontra o pycacic.py, o comando para chamar o
+agente deve ser *executado como root*:
+
+# python pycacic.py
+
+A mensagem final deve ser algo como:
+
+"2006-01-13 18:27:25,022 cacic[10742] INFO cacic:94: Finished execution
+sucessfuly"
+
+Peço desculpas pelas mensagens estarem em inglês, por enquanto. Isso faz parte
+da intenção de fornecer um agente multi-línguas, mas em breve as mensagens deverão
+estar disponíveis também em português.
+
+
+Como relatar as questões:
+-------------------------
+
+Todos os problemas podem ser relatados na lista cacic-desenvolvimento.
+
+Em caso de problemas, seria interessante se fosse enviado em anexo para lista o resultado do
+comando "lshw -xml". Exemplo:
+
+# lshw -xml > /tmp/`hostname`.xml
+
+
+
+
+Problemas conhecidos:
+---------------------
+
+No momento, as seguintes informações de hardware não são coletadas:
+
+- No. serial da CPU
+- Resolução da placa de vídeo
+- Detalhes da memória RAM
+
+A seguinte informação de rede não está sendo coletada:
+
+- Último Login
+
+As demais informações devem aparecer, se aplicável (exemplo: Modem, CD/DVD não
+são itens existentes em todas as máquinas, mas se a máquina possuir um Modem,
+isso deve aparecer no relatório)
+
+Por padrão, o pycacic tenta se comunicar com o servidor do CACIC utilizando o
+host 'cacic', e analisa a interface eth0. A primeira opção é configurável. Já a
+interface, no momento, não pode ser alterada.
+
+
+- Yves Junqueira
+yves.junqueira@gmail.com
