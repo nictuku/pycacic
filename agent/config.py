@@ -48,9 +48,15 @@ logger = logging.getLogger("cacic.agent.config")
 try:
     import cacic
 except ImportError:
-    logger.error("'cacic.py' config file not found")
-    raise Exception, "'cacic.py' config file not found" 
+    logger.warning("'cacic.py' config file not found.")
+    
+    class cacic:
+        pass
+        
+else:
+    logger.warning("Loaded 'cacic.py' config file.")    
 
+    
 class cfg:
     """Builds a dict of configuration, in the following
     order of preference:
