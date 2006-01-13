@@ -126,7 +126,7 @@ def get_config(data):
     path = 'cacic2/ws/get_config.php'
     server = cur_config['server']
 
-    debug = urllib2.HTTPHandler(debuglevel=0)
+    debug = urllib2.HTTPHandler()
 
     url = 'http://' + server + '/' + path
     base64string = base64.encodestring('%s:%s' % ('USER_CACIC', 'PW_CACIC'))[:-1]

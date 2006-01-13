@@ -40,7 +40,7 @@ def post_info(putinfo,server,path):
     #FIXME: quebrar essa função em outras
 
     logger.debug("Posting info to the CACIC server")
-    debug = urllib2.HTTPHandler(debuglevel=0)
+    debug = urllib2.HTTPHandler()
 
     url = 'http://' + server + '/' + path
 
