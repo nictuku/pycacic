@@ -28,9 +28,19 @@ import apt_pkg
 import os
 import sys
 
+class packages:
+
+    installed = []
+    
+    def __init__(self):
+        c = cache()
+        self.installed = c.installed_packages.keys()
+        self.installed.sort()
+        
+
 class cache:
 
-    # ['Name' : 'Version']
+    # {'Name' : 'Version'}
     installed_packages = {}
     
     def __init__(self):
@@ -77,5 +87,5 @@ class cache:
         return inst_pkgs        
 
 if __name__ == '__main__':
-    c = cache()
-    print "oi", c.installed_packages
+    s = packages()
+    print "oi", s.installed
