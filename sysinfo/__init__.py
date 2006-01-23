@@ -38,6 +38,7 @@ a portable way, for both Linux and Windows.
 # sysinfo.hardware.motherboard.vendor
 # sysinfo.hardware.videoboard.product
 # sysinfo.hardware.videoboard.vendor
+# sysinfo.software.installed = list
 #
 # All data must be populated, even with empty values.
 #
@@ -63,6 +64,7 @@ if sys.platform == 'linux2':
     from linux.network import network
     from linux.hardware import hardware
     from linux import services
+    # FIXME: import linux.apt || linux.rpm as software
 
 elif sys.platform == 'win32':
     logger.info("Loading sysinfo for win32")
