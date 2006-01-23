@@ -161,6 +161,7 @@ def get_config(data):
 
 get_hard = True
 get_services = True
+get_software = True
 
 class load:
     info = {}
@@ -221,6 +222,15 @@ class load:
             smb = sysinfo.services.smb()
 
 
+        if get_software:
+            logger.debug("Getting software packages data")
+            pkgs = sysinfo.software.packages()
+            
+            packages = ''
+            
+            for p in pkgs.installed:
+                packages += p
+            
         logger.debug("Populating 'config_info' dictionary")
         self.config_info = {
          'te_node_address'          : mac_address,
@@ -232,6 +242,13 @@ class load:
 
         }
 
+        if get_software:
+            logger.debug("Populating 'software_info' dictionary")
+
+            self.software_info = self.config_info.copy()
+            self.software_info['te_inventario_softwares'] = packages
+            #print "PACKAGES:", packages
+        
         if get_services and get_hard:
             logger.debug("Populating 'info' dictionary")
 

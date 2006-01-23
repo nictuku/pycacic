@@ -65,6 +65,8 @@ if sys.platform == 'linux2':
     from linux.hardware import hardware
     from linux import services
     # FIXME: import linux.apt || linux.rpm as software
+    from linux import apt as software
+
 
 elif sys.platform == 'win32':
     logger.info("Loading sysinfo for win32")
