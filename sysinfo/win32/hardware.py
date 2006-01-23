@@ -19,6 +19,7 @@
 #   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import win32com.client
+import logging
 
 class get_hardware:
     """Uses win32com to get hardware information. Script sampled from Microsoft.
@@ -28,10 +29,12 @@ class get_hardware:
 
     def __init__(self):
     
-        target_list = ['Win32_ComputerSystem', 
+        target_list = [
+                       'Win32_ComputerSystem', 
                        'Win32_BIOS', 
                        'Win32_NetworkAdapter', 
-                       'Win32_NetworkAdapterConfiguration'
+                       #'Win32_NetworkAdapterConfiguration'
+                       'Win32_OperatingSystem'
                        ]
 
         strComputer = "."
@@ -60,6 +63,12 @@ class get_hardware:
                     print item.IPAddress
 
                     #self.data['ip_network'] = item.IPAddress
+
+                if target == 'Win32_OperatingSystem':
+                    logging.debug("Memory: " + item.TotalVisibleMemorySize)
+                    self.data['System Memory'] = []
+                    self.data['System Memory'].append({})
+                    self.data['System Memory'][0]['size'] = item.TotalVisibleMemorySize
 
 
         print self.data
