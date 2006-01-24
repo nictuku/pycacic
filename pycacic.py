@@ -83,15 +83,22 @@ logger.debug("Loading agent.config.load()")
 cacic = agent.config.load()
 #print "config:", cacic.remote_cfg
 info = cacic.info
+soft_info = cacic.software_info
+
 #print "hw:", hw.__dict__
 # get_config cria a maquina, set_tcp_ip manda infos
 
 logger.info("Getting configuration from the server")
 helloCACIC.post_info(info,'cacic','cacic2/ws/get_config.php')
+
 logger.info("Posting network information")
 helloCACIC.post_info(info,'cacic','cacic2/ws/set_tcp_ip.php')
+
 logger.info("Posting hardware information")
 helloCACIC.post_info(info,'cacic','cacic2/ws/set_hardware.php')
+
+logger.info("Postinf software information")
+helloCACIC.post_info(soft_info, 'cacic','cacic2/ws/set_software.php')
 
 logger.info("Finished execution sucessfuly")
 

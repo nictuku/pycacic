@@ -166,6 +166,7 @@ get_software = True
 class load:
     info = {}
     config_info = {}
+    software_info = {}
     remote_cfg = {}
     remote_raw_cfg = ''
     logger.debug("Loading config.load class")
@@ -229,7 +230,7 @@ class load:
             packages = ''
             
             for p in pkgs.installed:
-                packages += p
+                packages += p + "#"
             
         logger.debug("Populating 'config_info' dictionary")
         self.config_info = {
