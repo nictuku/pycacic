@@ -136,7 +136,7 @@ class LshwDataParser(ContentHandler):
         """Argh. This is ugly.
         """
         # FIXME: hmm what's the string for CD reader?
-        for element in ['CPU', 'BIOS', 'System Memory', 'Motherboard', 'VGA compatible controller', 
+        for element in ['CPU', 'BIOS', 'System Memory', 'System memory', 'Motherboard', 'VGA compatible controller', 
                 'Multimedia audio controller', 'DVD-RAM writer', 'DVD reader', 'Modem' ,'Mouse',
                 'Ethernet interface']:
 
@@ -154,6 +154,9 @@ class LshwDataParser(ContentHandler):
                            set += ' ' + unit
         
                         self.HardWare[element][-1][info] = set
+                # In some cases (why?) 'System Memory' appears with a minor 'm'.
+                if element == 'System memory':
+                    self.HardWare['System Memory'] = self.HardWare[element]    
 
 
 class get_hardware:
@@ -222,7 +225,11 @@ class memory:
 
     def __init__(self, hw):
         if hw.data.has_key('System Memory'):
+            print "system memory"
             self.size = hw.data['System Memory'][0].get('size', '')
+            print self.size
+        else:
+            print "no system memory"
 
 class mouse:
     product = ''
@@ -284,7 +291,7 @@ class video_board:
         if hw.data.has_key('VGA compatible controller'):
             self.product = hw.data['VGA compatible controller'][index].get('product')
             self.memory = hw.data['VGA compatible controller'][index].get('size')
-            print "video mem", self.memory
+            #print "video mem", self.memory
             self.width = hw.data['VGA compatible controller'][index].get('width')
             self.vendor = hw.data['VGA compatible controller'][index].get('vendor')
 

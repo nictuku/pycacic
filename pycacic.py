@@ -48,8 +48,10 @@ metodologias e estruturas.
 
 import logging
 
-format = "%(asctime)s cacic[%(process)d] %(levelname)s %(name)s:%(lineno)d: %(message)s"
-#format = "%(asctime)s %(levelname)s %(message)s"
+#format = "%(asctime)s cacic[%(process)d] %(levelname)s \
+#%(name)s:%(lineno)d: %(message)s"
+
+format = "%(asctime)s %(levelname)s %(message)s"
 
 logger = logging.getLogger("cacic")
 logger.setLevel(logging.DEBUG)
