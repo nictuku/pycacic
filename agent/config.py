@@ -217,21 +217,6 @@ class load:
             # CACIC used - as a separator for MAC's
             mac_address = interf.mac_address.replace(':','-')
            
-        # FIXME: if mac_address is not in remote_cfg['ignore_macs']
-        if get_services:
-            logger.debug("Getting smb data from sysinfo.services.smb()")
-            smb = sysinfo.services.smb()
-
-
-        if get_software:
-            logger.debug("Getting software packages data")
-            pkgs = sysinfo.software.packages()
-            
-            packages = ''
-            
-            for p in pkgs.installed:
-                packages += p + "#"
-            
         logger.debug("Populating 'config_info' dictionary")
         self.config_info = {
          'te_node_address'          : mac_address,
@@ -243,11 +228,35 @@ class load:
 
         }
 
+ 
+
+        # FIXME: if mac_address is not in remote_cfg['ignore_macs']
+        if get_services:
+            logger.debug("Getting smb data from sysinfo.services.smb()")
+            smb = sysinfo.services.smb()
+
+
         if get_software:
+            logger.debug("Getting software packages data")
+            pkgs = sysinfo.software.packages()
+                        
+            packages = ''
+            
+            for p in pkgs.installed:
+                packages += p + "#"
+            
+            env = sysinfo.misc.env()
+            
+            environ = ''
+            
+            for var, value in env.variables.iteritems():
+                environ += var + '=' + value + '#'
+                
             logger.debug("Populating 'software_info' dictionary")
 
             self.software_info = self.config_info.copy()
             self.software_info['te_inventario_softwares'] = packages
+            self.software_info['te_variaveis_ambiente'] = environ
             #print "PACKAGES:", packages
         
         if get_services and get_hard:

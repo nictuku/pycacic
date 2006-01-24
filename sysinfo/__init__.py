@@ -64,6 +64,7 @@ if sys.platform == 'linux2':
     from linux.network import network
     from linux.hardware import hardware
     from linux import services
+    from linux import misc
     # FIXME: import linux.apt || linux.rpm as software
     from linux import apt as software
 

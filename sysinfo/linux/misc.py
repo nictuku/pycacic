@@ -32,4 +32,8 @@ class env:
     
     def __init__(self):
 
-    self.variables = os.environ
+        self.variables = os.environ
+
+if __name__ == '__main__':
+    e = env()
+    print e.variables
