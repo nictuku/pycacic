@@ -31,11 +31,15 @@ import sys
 class packages:
 
     installed = []
+    installed_ver = {}
     
     def __init__(self):
         c = cache()
         self.installed = c.installed_packages.keys()
         self.installed.sort()
+        
+        for software in self.installed:
+            self.installed_ver[software] = c.installed_packages[software].VerStr
         
 
 class cache:
@@ -88,4 +92,6 @@ class cache:
 
 if __name__ == '__main__':
     s = packages()
-    print "oi", s.installed
+    print "instalados", s.installed
+    print "instalados_versao", s.installed_ver
+    
