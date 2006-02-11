@@ -29,6 +29,7 @@ import commands
 import logging
 import string 
 import sys
+import os
 
 logger = logging.getLogger("sysinfo.linux.hardware")
 
@@ -168,6 +169,14 @@ class get_hardware:
         handler = LshwDataParser()
         parser.setContentHandler(handler)
         logger.info("Calling lshw.")
+
+        id = str(os.getuid())
+
+        if id != '0':
+            logger.error("In the current version, sysinfo hardware collection requires root. \
+Current uid: " + id)
+            sys.exit(1)
+
         lshwxml = commands.getstatusoutput("export LANGUAGE=C; /usr/bin/env lshw -xml 2>&1|grep -v WARNING")
         logger.info("Done with lshw.")
         if lshwxml[0] != 0:
