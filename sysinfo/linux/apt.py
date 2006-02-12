@@ -32,11 +32,13 @@ class packages:
 
     installed = []
     installed_ver = {}
+    update_candidates = {}
     
     def __init__(self):
         c = cache()
         self.installed = c.installed_packages.keys()
         self.installed.sort()
+        self.update_candidates = c.update_candidates
         
         for software in self.installed:
             self.installed_ver[software] = c.installed_packages[software].VerStr
@@ -46,18 +48,48 @@ class cache:
 
     # {'Name' : 'Version'}
     installed_packages = {}
+    update_candidates = {}
+    cache = ''
     
     def __init__(self):
 
+        apt_pkg.init()
+        self.cache = apt_pkg.GetCache()
         self.installed_packages = self.get_installed_packages()
+        self.update_candidates = self.get_update_candidates()
+        
 
+    def get_update_candidates(self):
+
+        update_pkgs = {} 
+
+        depcache = apt_pkg.GetDepCache(self.cache)
+        depcache.ReadPinFile()
+        depcache.Init()
+        depcache.Upgrade()
+
+        for pkg in self.cache.Packages:
+            #if pkg.CurrentVer:
+            #    update_pkgs[pkg.Name] = pkg.CurrentVer
+            #    print "ver", pkg.CurrentVer.VerStr
+
+                #for depend in pkg.CurrentVer.DependsList.get("Depends", []):
+                #    print "depends", depend,
+            if depcache.MarkedInstall(pkg) or depcache.MarkedUpgrade(pkg):
+                if depcache.GetCandidateVer(pkg) != pkg.CurrentVer:
+                    update_pkgs[pkg.Name] = depcache.GetCandidateVer(pkg).VerStr
+         #           print "Update", pkg.Name
+            #    sys.exit(0)
+
+        return update_pkgs
+       
+ 
     def get_installed_packages(self):
         inst_pkgs = {}
         
         # FIXME: change to InitSystem, InitConfig and hide info messages
-        apt_pkg.init()
+        #apt_pkg.init()
         # get caches
-        cache = apt_pkg.GetCache()
         #depcache = apt_pkg.GetDepCache(cache)
 
         # read the pin files
@@ -77,7 +109,7 @@ class cache:
         
         # version comparison function:
         # http://mail.python.org/pipermail/python-list/2005-March/272909.html
-        for pkg in cache.Packages:
+        for pkg in self.cache.Packages:
             if pkg.CurrentVer:
                 inst_pkgs[pkg.Name] = pkg.CurrentVer
             #    print "ver", pkg.CurrentVer.VerStr
@@ -92,6 +124,7 @@ class cache:
 
 if __name__ == '__main__':
     s = packages()
-    print "instalados", s.installed
-    print "instalados_versao", s.installed_ver
+    #print "instalados", s.installed
+    #print "instalados_versao", s.installed_ver
+    print "update", s.update_candidates
     
