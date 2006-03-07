@@ -21,6 +21,14 @@
 """CACIC extension for patrimony collection
 """
 from agent import http
+
+from xml.sax import ContentHandler
+from xml.sax import make_parser
+from xml.sax import parseString
+
+import StringIO
+#import xml.sax
+
 class patrimony:
     labels = ''
     def __init__(self):
@@ -30,3 +38,33 @@ class patrimony:
 	labels_xml = http.get_info('cacic',
 	    'cacic2/ws/get_patrimonio.php?tipo=config')
 	return labels_xml
+
+
+class labels_xml_parser(ContentHandler):
+    """Parse XML data for the labels configuration taken from the CACIC
+    server.
+    """
+
+    def __init__(self):
+#        logger.debug("Created new instance for the 'LshwDataParser' class")
+        # Config data
+        #self.Config = []
+        self.CurrentTag = [{}]
+	self.Labels = [{}]
+
+    def startElement(self, tag, attrs):
+
+#        self.CurrentTag.append({'name' : tag })
+
+	self.Labels.append({'name' : 'node' })
+	
+    def endElement(self, tag):
+        
+        # sanity test
+        if self.CurrentTag[-1]['name'] != tag:
+        #print "Hey this shouldn't happen.", self.CurrentTag[-1]['name'], tag
+            sys.exit(1)
+
+        else:
+            self.CurrentTag.pop()
+
