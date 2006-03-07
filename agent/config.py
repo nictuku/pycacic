@@ -33,6 +33,7 @@ import httplib
 import base64
 import logging
 import sys
+import ConfigParser
 
 import http
 import sysinfo
@@ -40,23 +41,8 @@ import sysinfo
 import StringIO
 import gzip
 
-sys.path.append('/etc/pycacic')
-sys.path.append('/usr/local/etc/pycacic')
-
 logger = logging.getLogger("cacic.agent.config")
 
-try:
-    import cacic
-except ImportError:
-    logger.warning("'cacic.py' config file not found.")
-    
-    class cacic:
-        pass
-        
-else:
-    logger.warning("Loaded 'cacic.py' config file.")    
-
-    
 class cfg:
     """Builds a dict of configuration, in the following
     order of preference:
@@ -78,15 +64,16 @@ class cfg:
                        'verbose':0,
         }
 
-        local_parameters = dir(cacic)
+	config = ConfigParser.ConfigParser()
+	result =  config.read(["/etc/pycacic/agent.conf", 
+               "/usr/local/pycacic/agent.conf"])
 
-        # local values overriding default values
+	# Overriding default options
         logger.debug("Loading local config")
-        for def_parameter, def_value in self.cacic_cfg.iteritems():
-            if def_parameter in local_parameters:
-                logger.debug("Local config: " + str(def_parameter) + "=" + 
-                    str(def_value))
-                self.cacic_cfg[def_parameter] = def_value
+	for opt in config.options('agent'):
+           val = config.get('agent', opt)
+	   self.cacic_cfg[opt] = val
+           logger.debug("Local config: " + opt + "=" + val)
 
 cur_cacic = cfg()
 cur_config = cur_cacic.cacic_cfg
@@ -175,7 +162,7 @@ class load:
         logger.debug("Instantiating config.load")
 
         net = sysinfo.network()
-        interf = net.interface('eth0')
+        interf = net.interface(cur_config['interface'])
         last = net.last_logon()
         
         self.remote_raw_cfg = get_config(self.config_info)
