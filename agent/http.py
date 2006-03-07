@@ -34,6 +34,43 @@ import logging
 
 logger = logging.getLogger("cacic.agent.http")
 
+def get_info(server,path):
+    logger.debug("Get info from CACIC server")
+    debug = urllib2.HTTPHandler()
+
+    url = 'http://' + server + '/' + path
+
+    #FIXME: isso deve ser configuravel
+    base64string = base64.encodestring('%s:%s' % ('USER_CACIC', 'PW_CACIC'))[:-1]
+
+    logger.debug("Building request object")
+    request = urllib2.Request(url) 
+    request.add_header('User-Agent', 'AGENTE_CACIC')   
+    request.add_header('Pragma', 'no-cache')   
+    request.add_header('Accept-encoding', 'gzip')  
+
+    request.add_header("Authorization", "Basic %s" % base64string)
+
+    opener = urllib2.build_opener(debug) # +authinfo
+
+    logger.debug("GETing request")
+    f = opener.open(request)
+
+    #FIXME: criar funcao para "handledata"
+    if f.headers.get('Content-Encoding') == 'gzip':
+        import StringIO
+        compresseddata = f.read()
+        compressedstream = StringIO.StringIO(compresseddata)
+        import gzip
+        gzipper = gzip.GzipFile(fileobj=compressedstream)  
+        feeddata = gzipper.read()  
+    else:
+        feeddata = opener.open(request).read()
+    
+    return feeddata
+
+
+
 def post_info(putinfo,server,path):
     """Send pre-formated 'putinfo' string  to the 'destination' in the http server
     """
