@@ -20,51 +20,58 @@
 
 """CACIC extension for patrimony collection
 """
+import re
+
 from agent import http
 
-from xml.sax import ContentHandler
-from xml.sax import make_parser
-from xml.sax import parseString
-
-import StringIO
-#import xml.sax
-
 class patrimony:
-    labels = ''
-    def __init__(self):
-	self.labels = self.get_labels()
 
-    def get_labels(self):
+    labels = {
+        'te_etiqueta1' : '',
+	'te_help_etiqueta1' : '',
+        'te_etiqueta2' : '',
+	'te_help_etiqueta2' : '',
+        'te_etiqueta3' : '', 
+	'te_help_etiqueta3' : '',
+        'te_etiqueta4' : '',
+	'te_help_etiqueta4' : '',
+        'te_etiqueta5' : '',
+	'te_help_etiqueta5' : '',
+        'te_etiqueta6' : '',
+	'te_help_etiqueta6' : '',
+        'te_etiqueta7' : '',
+	'te_help_etiqueta7' : '',
+        'te_etiqueta8' : '',
+	'te_help_etiqueta8' : '',
+        'te_etiqueta9' : '',
+	'te_help_etiqueta9' : '', }
+
+    def __init__(self):
+	self.labels_xml = self.get_labels_xml()
+	self.labels = self.get_labels(self.labels_xml)
+
+
+    def get_labels_xml(self):
 	labels_xml = http.get_info('cacic',
 	    'cacic2/ws/get_patrimonio.php?tipo=config')
 	return labels_xml
 
+    def get_labels(self, labels_xml):
+	#labels_xml.replace('<STATUS>OK<\/STATUS>','')
 
-class labels_xml_parser(ContentHandler):
-    """Parse XML data for the labels configuration taken from the CACIC
-    server.
-    """
+	l = {}
+	for k in self.labels.keys():
+	    s = '<' + k + '>(?P<value>[^<]*)<\/' + k + '>'
+	    m = re.compile(s,re.I|re.M)
+            p = m.search(labels_xml)
 
-    def __init__(self):
-#        logger.debug("Created new instance for the 'LshwDataParser' class")
-        # Config data
-        #self.Config = []
-        self.CurrentTag = [{}]
-	self.Labels = [{}]
+	    value = ''
+	    try:
+		value = p.group('value')
+	    except:
+		pass
 
-    def startElement(self, tag, attrs):
+	    l[k] = value 
 
-#        self.CurrentTag.append({'name' : tag })
-
-	self.Labels.append({'name' : 'node' })
-	
-    def endElement(self, tag):
-        
-        # sanity test
-        if self.CurrentTag[-1]['name'] != tag:
-        #print "Hey this shouldn't happen.", self.CurrentTag[-1]['name'], tag
-            sys.exit(1)
-
-        else:
-            self.CurrentTag.pop()
+	return l
 
