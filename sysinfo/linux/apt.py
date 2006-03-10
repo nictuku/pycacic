@@ -35,6 +35,9 @@ class packages:
     update_candidates = {}
     
     def __init__(self):
+        # FIXME: These works, but isn't it ugly?
+        #os.close(1)
+        #os.close(2)
         c = cache()
         self.installed = c.installed_packages.keys()
         self.installed.sort()
