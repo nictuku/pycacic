@@ -47,58 +47,69 @@ metodologias e estruturas.
 
 
 import logging
+import logging.handlers
 
+# Formato de data alternativa
 #format = "%(asctime)s cacic[%(process)d] %(levelname)s \
 #%(name)s:%(lineno)d: %(message)s"
 
-format = "%(asctime)s %(levelname)s %(message)s"
+# Log para stdout
+#format = "%(asctime)s %(levelname)s %(message)s"
+#log = logging.getLogger("cacic")
+#log.setLevel(logging.DEBUG)
+#ch = logging.StreamHandler()
+#ch.setLevel(logging.DEBUG)
+#formatter = logging.Formatter(format)
+#ch.setFormatter(formatter)
+#log.addHandler(ch)
 
-logger = logging.getLogger("cacic")
-logger.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter(format)
-ch.setFormatter(formatter)
-logger.addHandler(ch)
-
-sysinfo_logger = logging.getLogger("sysinfo")
-sysinfo_logger.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter(format)
-ch.setFormatter(formatter)
-sysinfo_logger.addHandler(ch)
+# necessario?
+#sysinfo_log = logging.getLogger("sysinfo")
+#sysinfo_log.setLevel(logging.DEBUG)
+#ch = logging.StreamHandler()
+#ch.setLevel(logging.DEBUG)
+#formatter = logging.Formatter(format)
+#ch.setFormatter(formatter)
+#sysinfo_log.addHandler(ch)
   
+log = logging.getLogger()
 
-logger.info("Starting PyCACIC.")
-logger.debug("Loading agent.http")
+hdlr = logging.handlers.SysLogHandler(
+  "/dev/log",facility=logging.handlers.SysLogHandler.LOG_DAEMON)
 
-import agent
-import agent.config
+formatter = logging.Formatter(
+"pycacic[%(process)d] %(levelname)s %(message)s"
+    )
+hdlr.setFormatter(formatter)
+log.addHandler(hdlr)
+log.setLevel(logging.INFO)
 
+
+log.info("Starting PyCACIC.")
+log.debug("Loading agent.http")
+
+from cacic import agent
+from cacic.agent import config
 
 helloCACIC = agent.http
 
-logger.debug("Loading agent.config.load()")
-cacic = agent.config.load()
+log.debug("Loading cacic.agent.config.load()")
+cacic = config.load()
 #print "config:", cacic.remote_cfg
 info = cacic.info
 soft_info = cacic.software_info
 
-#print "hw:", hw.__dict__
-# get_config cria a maquina, set_tcp_ip manda infos
-
-logger.info("Getting configuration from the server")
+log.info("Getting configuration from the server")
 helloCACIC.post_info(info,'cacic','cacic2/ws/get_config.php')
 
-logger.info("Posting network information")
+log.info("Posting network information")
 helloCACIC.post_info(info,'cacic','cacic2/ws/set_tcp_ip.php')
 
-logger.info("Posting hardware information")
+log.info("Posting hardware information")
 helloCACIC.post_info(info,'cacic','cacic2/ws/set_hardware.php')
 
-logger.info("Postinf software information")
+log.info("Postinf software information")
 helloCACIC.post_info(soft_info, 'cacic','cacic2/ws/set_software.php')
 
-logger.info("Finished execution sucessfuly")
+log.info("Finished execution sucessfuly")
 

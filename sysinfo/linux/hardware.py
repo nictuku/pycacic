@@ -96,19 +96,17 @@ class LshwDataParser(ContentHandler):
         
         # sanity test
         if self.CurrentTag[-1]['name'] != tag:
-            #print "Hey this shouldn't happen.", self.CurrentTag[-1]['name'], tag
             sys.exit(1)
 
         else:
             self.CurrentTag.pop()
             if tag == 'node':
-            # Node closing. We should get all that and store somewhere, then pop it
+            # Node closing. We should get all that and store somewhere, then
+	    # pop it
             # from the self.Nodes list.
                 node = self.Nodes[-1]
 
                 if node.has_key('physid') and node.has_key('description'):
-                    #print "Physid:", node['physid']
-                    #print "Description:", node['description']
 
                     self.setHardWare(node)
 
@@ -179,24 +177,15 @@ Current uid: " + id)
 
         lshwxml = commands.getstatusoutput("export LANGUAGE=C; /usr/bin/env lshw -xml 2>&1|grep -v WARNING")
         logger.info("Done with lshw.")
-        if lshwxml[0] != 0:
+        if lshwxml[0] != 0 or len(lshwxml[1]) < 1:
             # This would kill this module instance. Should we handle it instead?
             logger.error("Could not run lshw")
             raise LSHWRunError, "could not run lshw"
         else:
             xmldata = lshwxml[1]
 
-        #print dir(parser)
-        #sys.exit(1)
-        #print "="*80
-        #print xmldata
-        #print "="*80
         input = StringIO.StringIO(xmldata)
-        #print "input", input
         parser.parse(input)
-#        parser.parse('lshw.xml')
-
-#        parser.parse('lshw.xml')
         self.data = handler.HardWare
 
 class keyboard:
@@ -234,11 +223,7 @@ class memory:
 
     def __init__(self, hw):
         if hw.data.has_key('System Memory'):
-            print "system memory"
             self.size = hw.data['System Memory'][0].get('size', '')
-            print self.size
-        else:
-            print "no system memory"
 
 class mouse:
     product = ''
@@ -300,7 +285,6 @@ class video_board:
         if hw.data.has_key('VGA compatible controller'):
             self.product = hw.data['VGA compatible controller'][index].get('product')
             self.memory = hw.data['VGA compatible controller'][index].get('size')
-            #print "video mem", self.memory
             self.width = hw.data['VGA compatible controller'][index].get('width')
             self.vendor = hw.data['VGA compatible controller'][index].get('vendor')
 

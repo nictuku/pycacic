@@ -60,7 +60,6 @@ class cfg:
                        'force_send':0, 
                        'interface':'eth0', 
                        'log_path':'/var/log/cacic', 
-                       'test_mode':0, 
                        'verbose':0,
         }
 
@@ -70,10 +69,13 @@ class cfg:
 
 	# Overriding default options
         logger.debug("Loading local config")
-	for opt in config.options('agent'):
-           val = config.get('agent', opt)
-	   self.cacic_cfg[opt] = val
-           logger.debug("Local config: " + opt + "=" + val)
+	try:
+	    for opt in config.options('agent'):
+	       val = config.get('agent', opt)
+	       self.cacic_cfg[opt] = val
+	       logger.debug("Local config: " + opt + "=" + val)
+	except:
+	    pass
 
 cur_cacic = cfg()
 cur_config = cur_cacic.cacic_cfg
@@ -207,7 +209,7 @@ class load:
         logger.debug("Populating 'config_info' dictionary")
         self.config_info = {
          'te_node_address'          : mac_address,
-         'id_so'                    : '0',
+         'id_so'                    : '9',
          'id_ip_rede'               : interf.ip_network,
          'te_nome_computador'       : net.hostname,
          'te_ip'                    : interf.ip_addresses[0],
@@ -252,7 +254,7 @@ class load:
             self.info =  {
             
              'te_node_address'          : mac_address,
-             'id_so'                    : '0',
+             'id_so'                    : '9',
              'id_ip_rede'               : interf.ip_network,
              'te_nome_computador'       : net.hostname,
              'te_ip'                    : interf.ip_addresses[0],

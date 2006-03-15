@@ -22,9 +22,12 @@
 """
 import re
 
-from agent import http
+from cacic.agent import http
 
 class patrimony:
+
+    uon1 = {}
+	uon2 = {}
 
     labels = {
         'te_etiqueta1' : '',
@@ -47,21 +50,17 @@ class patrimony:
 	'te_help_etiqueta9' : '', }
 
     def __init__(self):
-	self.labels_xml = self.get_labels_xml()
-	self.labels = self.get_labels(self.labels_xml)
+	self.labels = self._get_labels()
+	self.uon1 = self._get_uon1()
+	self.uon2 = self._get_uon2()
 
+    def _get_patr_xml(self, info):
+	patr_xml = http.get_info('cacic',
+	    'cacic2/ws/get_patrimonio.php?tipo=' + info)
+	return patr_xml
 
-    def get_labels_xml(self):
-	labels_xml = http.get_info('cacic',
-	    'cacic2/ws/get_patrimonio.php?tipo=config')
-	return labels_xml
-
-    def get_uon1_xml(self):
-	uon1_xml = http.get_info('cacic', 
-	'cacic2/ws/get_patrimonio.php?tipo=itens_uon1')
-	return uon1_xml
-
-    def get_labels(self, labels_xml):
+    def _get_labels(self):
+	labels_xml = self._get_patr_xml('config')
 	#labels_xml.replace('<STATUS>OK<\/STATUS>','')
 
 	l = {}
@@ -78,3 +77,78 @@ class patrimony:
 	    l[k] = value 
 
 	return l
+
+    def _get_uon1(self):
+
+	uon1_xml = self._get_patr_xml('itens_uon1')
+
+	uon1_list = uon1_xml.split('<ITEM>')
+
+	uon1 = {}
+
+	for item in uon1_list:
+	    s = '<ID1>(?P<id>\d+)<\/ID1><VALOR>(?P<valor>[^>]+)<\/VALOR><\/ITEM>'
+	    m = re.compile(s,re.I|re.M)
+	    p = m.search(item)
+	    id = ''
+	    value = ''
+	    try:
+		value = p.group('valor')
+	    except:
+		continue	
+	    try:
+		id = p.group('id')
+	    except:
+		continue
+
+	    uon1[id]=value
+
+	return uon1
+
+    def _get_uon2(self):
+
+	uon2_xml = self._get_patr_xml('itens_uon2')
+
+	uon2_list = uon2_xml.split('<ITEM>')
+
+	uon2 = {}
+
+	for item in uon2_list:
+	    s = '<ID1>(?P<id1>\d+)<\/ID1><ID2>(?P<id2>\d+)<\/ID2><VALOR>(?P<valor>[^>]+)<\/VALOR><\/ITEM>'
+	    m = re.compile(s,re.I|re.M)
+	    p = m.search(item)
+	    id1 = ''
+	    id2 = ''
+	    value = ''
+	    try:
+		value = p.group('id2')
+	    except:
+		continue	
+	    try:
+		id1 = p.group('id1')
+	    except:
+		continue
+
+	    try:
+		id2 = p.group('id2')
+	    except:
+		continue
+
+	    try:
+		value = p.group('valor')
+	    except:
+		continue
+
+	    if not uon2.has_key(id1):
+		uon2[id1] = {}
+	    
+	    uon2[id1][id2]=value  
+
+	return uon2
+    
+    def	ask(self, label):
+	
+	for k, v in self.uon1.iteritems():
+	    
+	    print v
+
