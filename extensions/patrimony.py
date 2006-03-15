@@ -56,6 +56,11 @@ class patrimony:
 	    'cacic2/ws/get_patrimonio.php?tipo=config')
 	return labels_xml
 
+    def get_uon1_xml(self):
+	uon1_xml = http.get_info('cacic', 
+	'cacic2/ws/get_patrimonio.php?tipo=itens_uon1')
+	return uon1_xml
+
     def get_labels(self, labels_xml):
 	#labels_xml.replace('<STATUS>OK<\/STATUS>','')
 
@@ -70,8 +75,6 @@ class patrimony:
 		value = p.group('value')
 	    except:
 		pass
-
 	    l[k] = value 
 
 	return l
-
