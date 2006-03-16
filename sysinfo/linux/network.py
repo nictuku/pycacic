@@ -71,7 +71,7 @@ class ifconfig:
     def __init__(self):
         logger.info("Reading ifconfig data")
         # Sets 'ifconfig' 
-        ifconfig = commands.getstatusoutput("export LANGUAGE=C; /usr/bin/env ifconfig")
+        ifconfig = commands.getstatusoutput("export LANGUAGE=C; ifconfig")
         if ifconfig[0] != 0:
             # This would kill this module instance.
             logger.error("Could not run ifconfig")
@@ -88,24 +88,21 @@ class ifconfig:
                     self.interf_dict[ interf_list[i - 2] ] = x
                 i += 1
 
-ifconfig_instance = ifconfig()
+
 
 class resolv:
     """Gets resolver information from /etc/resolv.conf
     and populates resolvconf, dnsdomain and dnsresolvers
     """
-    dnsdomain = ''
-    dnsresolvers = ''
-    resolvconf = ''
 
     def __init__(self):
         # Return empty resolvconf. Do not raise error.
 
-        self.resolvconf = self.get_resolvconf()
-        self.dnsdomain = self.get_dnsdomain()
-        self.dnsresolvers = self.get_dnsresolvers()
+        self.resolvconf = self._get_resolvconf()
+        self.dnsdomain = self._get_dnsdomain()
+        self.dnsresolvers = self._get_dnsresolvers()
 
-    def get_resolvconf(self):
+    def _get_resolvconf(self):
         logger.debug("Getting DNS resolvers data")
         try:
             r = open('/etc/resolv.conf','r')
@@ -116,7 +113,7 @@ class resolv:
             return r.read()
             r.close()
 
-    def get_dnsdomain(self):
+    def _get_dnsdomain(self):
 
         h = re.compile( r'(domain|search)\s+(?P<domain>.*)\s*',
                         re.I)
@@ -128,7 +125,7 @@ class resolv:
 
         return ''
 
-    def get_dnsresolvers(self):
+    def _get_dnsresolvers(self):
 
         r = re.compile( r'([\W]nameserver)\s+(?P<resolver>\S+)\s*'
                         r'((nameserver)\s+(?P<resolver2>\S+)\s*)?',
@@ -155,24 +152,21 @@ class resolv:
 class misc:
     """Gets miscelaneous information from the system.
     """
-    hostname = ''
-    default_gateway = ''
-    interfaces = []
-    
-    def __init__(self):
+   
+    def __init__(self, ifc):
         self.hostname = socket.gethostname()
-        self.default_gateway = self.get_default_gateway()
-        self.interfaces = ifconfig_instance.interf_dict.keys()
+        self.default_gateway = self._get_default_gateway()
+        self.interfaces = ifc.interf_dict.keys()
 
-    def get_default_gateway(self):
-        t1 = self.get_default_gateway_from_proc()
+    def _get_default_gateway(self):
+        t1 = self._get_default_gateway_from_proc()
         if not t1:
-            t1 = self.get_default_gateway_from_bin_route()
+            t1 = self._get_default_gateway_from_bin_route()
             if not t1:
                return None
         return t1
 
-    def get_default_gateway_from_proc(self):
+    def _get_default_gateway_from_proc(self):
         """"Returns the current default gateway, reading that from /proc'
         """
         logger.debug("Reading default gateway information from /proc")
@@ -196,7 +190,7 @@ class misc:
                 return None
 
 
-    def get_default_gateway_from_bin_route(self):
+    def _get_default_gateway_from_bin_route(self):
         """Get Default Gateway from '/sbin/route -n
         Called by get_default_gateway and is only used if could not get that from /proc
         """
@@ -220,26 +214,20 @@ class misc:
 class interface:
     """Retrieves interface specific information
     """
-    ip_addresses = []
-    mac_address = ''
-    netmask = ''
-    status = ''
-    dhcp_server = ''
-    ip_network = ''
-    interf_dict = {}
 
-    def __init__(self, interf=None):
-        self.interf_dict = ifconfig_instance.interf_dict
+    def __init__(self, ifc, interf=None):
+        self.interf_dict = ifc.interf_dict
 
         if interf:
-            self.ip_addresses = self.get_ip_addresses(interf)
-            self.mac_address = self.get_mac_address(interf)
-            self.netmask = self.get_netmask(interf)
-            self.ip_network = self.get_network(self.ip_addresses[0],self.netmask)
-            self.status = self.get_status(interf)
-            self.dhcp_server = self.get_dhcp_server(interf)
+            self.ip_addresses = self._get_ip_addresses(interf)
+            self.mac_address = self._get_mac_address(interf)
+            self.netmask = self._get_netmask(interf)
+            self.ip_network = self._get_network(self.ip_addresses[0],
+		self.netmask)
+            self.status = self._get_status(interf)
+            self.dhcp_server = self._get_dhcp_server(interf)
 
-    def get_ip_addresses(self, interf=None):
+    def _get_ip_addresses(self, interf=None):
         """Shows the interface's respective IP addresses
         """
         # FIXME: get_address currently returns a singleton list.
@@ -252,7 +240,7 @@ class interface:
         return ip_addrs
 
     
-    def get_mac_address(self,interf=None):
+    def _get_mac_address(self,interf=None):
         """Gives network interfaces hardware address
         """
         mac = ''
@@ -263,29 +251,28 @@ class interface:
                 mac = w.group('mac')
         return mac
 
-    def get_network(self,ip=None,netmask=None):
+    def _get_network(self,ip=None,netmask=None):
 
-        network = ''
         if ip and netmask:
             (host, network) = convert_ip_to_net_and_host(ip, netmask)
         return network
 
-    def get_netmask(self,interf=None):
+    def _get_netmask(self,interf=None):
         """Shows the interface's respective IP netmask
         """
-        netmask = ''
-        if interf:
+        
+	if interf:
             h = re.compile(r'Mask:(?P<netmask>[\w.]+)', re.I)
             w = h.search(self.interf_dict[interf])
             if w:
                 netmask = w.group('netmask')
         return netmask
 
-    def get_status(self,interf=None):
+    def _get_status(self,interf=None):
         """Shows interface status
         """
-        status = ''
-        if interf:
+        
+	if interf:
             h = re.compile('UP',re.I)
             w = h.search(self.interf_dict[interf])
             if w:
@@ -295,7 +282,7 @@ class interface:
         else:
             return ''
 
-    def get_dhcp_server(self,interf=None):
+    def _get_dhcp_server(self,interf=None):
         """Return the current DHCP Server for the 'interf' interface, by parsing the dhclient.leases file.
         It will try to define if the IP was indeed setup using DHCP by trying to find dhclient in the
         current running process list.
@@ -325,7 +312,8 @@ class interface:
             try:
                 f = open(leases_file)
             except:
-                logger.error("Could not open leases_file (tried from " + leases_file + " )")
+                logger.error("Could not open leases_file (tried from " + \
+		    leases_file + " )")
                 return ''
         dhcp = f.read()
         f.close()
@@ -352,19 +340,18 @@ class interface:
 
 class last_logon:
 
-    user = ''
-
     def __init__(self):
-        self.user = self.get_last_logon()
+        self.last_user = self._get_last_user()
 
-    def get_last_logon(self):
+    def _get_last_user(self):
         logger.debug("Getting last logon")
-        l = commands.getstatusoutput('export LANGUAGE=C; /usr/bin/env last')
+        l = commands.getstatusoutput('export LANGUAGE=C; last')
         if l[0] != 0:
             logger.error("Error while running 'last'")
             return ''
         else:
-            return 'USUARIO-AQUI'
+	    last_f = l[1].split()[0]
+            return last_f
                                         
 class network(resolv, ifconfig, misc, last_logon):
     """This is the stuff users will access. It inherits data from other 'os' 
@@ -372,19 +359,29 @@ class network(resolv, ifconfig, misc, last_logon):
     """
 
     def __init__(self):
+	self._ifc = ifconfig()
         resolv.__init__(self)
-        ifconfig.__init__(self)
-        misc.__init__(self)
+        misc.__init__(self, self._ifc)
         last_logon.__init__(self)
-        
-        self.interface = interface
-        self.last_logon = last_logon     
+        self.interface = self.interface_wrapper
+
+    def interface_wrapper(self, interf):
+	i = interface(self._ifc, interf)
+	return i
 
 if __name__ == '__main__':
+# Log para stdout
+    format = "%(asctime)s %(levelname)s %(message)s"
+    logger.setLevel(logging.DEBUG)
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+    formatter = logging.Formatter(format)
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
 
     g = network()
 
     #print i.interf_dict
     #print d.dnsdomain, d.dnsresolvers
-    b = g.interface('eth0')
-    print "teste", g.interfaces, b.ip_addresses, g.last_logon.user
+    b = g.interface('eth1')
+    print "teste", g.interfaces, b.ip_addresses, g.last_user

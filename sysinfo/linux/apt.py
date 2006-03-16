@@ -58,11 +58,11 @@ class cache:
 
         apt_pkg.init()
         self.cache = apt_pkg.GetCache()
-        self.installed_packages = self.get_installed_packages()
-        self.update_candidates = self.get_update_candidates()
+        self.installed_packages = self._get_installed_packages()
+        self.update_candidates = self._get_update_candidates()
         
 
-    def get_update_candidates(self):
+    def _get_update_candidates(self):
 
         update_pkgs = {} 
 
@@ -87,7 +87,7 @@ class cache:
         return update_pkgs
        
  
-    def get_installed_packages(self):
+    def _get_installed_packages(self):
         inst_pkgs = {}
         
         # FIXME: change to InitSystem, InitConfig and hide info messages

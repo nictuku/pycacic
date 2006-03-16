@@ -165,12 +165,12 @@ class load:
 
         net = sysinfo.network()
         interf = net.interface(cur_config['interface'])
-        last = net.last_logon()
+        last_user = net.last_user
         
         self.remote_raw_cfg = get_config(self.config_info)
         logger.debug("remote_raw_cfg populated")
 
-        logger.debug("LAST LOGON:" + last.user)
+        logger.debug("LAST LOGON:" + last_user)
 
         #print "Remote raw config:", remote_raw_cfg
 
@@ -267,7 +267,7 @@ class load:
              'te_dns_primario'          : net.dnsresolvers[0],
              'te_dns_secundario'        : net.dnsresolvers[1],
              'te_dominio_dns'           : net.dnsdomain,
-             'te_dominio_windows'       : last.user,
+             'te_dominio_windows'       : last_user,
              'te_wins_primario'         : smb.wins_servers[0],
              'te_wins_secundario'       : smb.wins_servers[1],
              'te_workgroup'             : smb.workgroup,

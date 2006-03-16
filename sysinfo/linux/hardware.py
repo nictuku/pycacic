@@ -33,20 +33,20 @@ import os
 
 logger = logging.getLogger("sysinfo.linux.hardware")
 
-# FIXME: teste feito em MDS500 mostrou que lshw às vezes gera um XML com caracteres
-# estranhos, como ^E^D^D^C
+# FIXME: teste feito em MDS500 mostrou que lshw às vezes gera um XML com
+# caracteres estranhos, como ^E^D^D^C
 
-class LSHWRunError(Exception):
+class lshw_run_error(Exception):
     pass
 
-class LshwDataParser(ContentHandler):
+class lshw_data_parser(ContentHandler):
     """Parse a XML file that was created using 'lshw -xml'. You need another
     function to parse it and copy the contents of "HardWare". The class
     "HardWare" below does that.
     """
 
     def __init__(self):
-        logger.debug("Created new instance for the 'LshwDataParser' class")
+        logger.debug("Created new instance for the 'lshw_data_parser' class")
         # List of dicts containing Nodes data
         self.Nodes = []
         # Dict containing current tag data.
@@ -122,7 +122,8 @@ class LshwDataParser(ContentHandler):
 
         # This will populate self.Nodes[-1] with relevant data.
         # Not that it would only work for unique data (like physid)
-        for x in ['description', 'physid', 'product', 'vendor', 'version', 'size', 'slot', 'width', 'serial']:
+        for x in ['description', 'physid', 'product', 'vendor', 'version', 
+    'size', 'slot', 'width', 'serial']:
 
             if self.CurrentTag[-1]['name'] == x:
  
@@ -135,9 +136,10 @@ class LshwDataParser(ContentHandler):
         """Argh. This is ugly.
         """
         # FIXME: hmm what's the string for CD reader?
-        for element in ['CPU', 'BIOS', 'System Memory', 'System memory', 'Motherboard', 'VGA compatible controller', 
-                'Multimedia audio controller', 'DVD-RAM writer', 'DVD reader', 'Modem' ,'Mouse',
-                'Ethernet interface']:
+        for element in ['CPU', 'BIOS', 'System Memory', 'System memory', 
+    'Motherboard', 'VGA compatible controller', 
+    'Multimedia audio controller', 'DVD-RAM writer', 'DVD reader', 
+    'Modem' ,'Mouse', 'Ethernet interface']:
 
             if node['description'] == element:
                 if not self.HardWare.has_key(element):
@@ -145,7 +147,8 @@ class LshwDataParser(ContentHandler):
     
                 self.HardWare[element].append({})
     
-                for info in ['product', 'vendor', 'size','version', 'slot', 'width', 'serial']:
+                for info in ['product', 'vendor', 'size','version', 'slot', 
+		    'width', 'serial']:
                     if node.has_key(info):
                         set = node[info]
                         if info == 'size' and len(self.CurrentTagUnits) > 1:
@@ -153,34 +156,38 @@ class LshwDataParser(ContentHandler):
                            set += ' ' + unit
         
                         self.HardWare[element][-1][info] = set
-                # In some cases (why?) 'System Memory' appears with a minor 'm'.
+                # In some cases (why?) 'System Memory' appears with
+		# a minor 'm'.
                 if element == 'System memory':
                     self.HardWare['System Memory'] = self.HardWare[element]    
 
 
 class get_hardware:
  
-    data = {}
-
     def __init__(self):
         parser = make_parser()
-        handler = LshwDataParser()
+        handler = lshw_data_parser()
         parser.setContentHandler(handler)
         logger.info("Calling lshw.")
 
         id = str(os.getuid())
 
         if id != '0':
-            logger.error("In the current version, sysinfo hardware collection requires root. \
-Current uid: " + id)
+            logger.error("In the current version, sysinfo hardware collection \
+requires root. Current uid: " + id)
+	    print "Sysinfo must be run as root."
             sys.exit(1)
 
-        lshwxml = commands.getstatusoutput("export LANGUAGE=C; /usr/bin/env lshw -xml 2>&1|grep -v WARNING")
-        logger.info("Done with lshw.")
+        lshwxml = commands.getstatusoutput(
+	    "export LANGUAGE=C; /usr/bin/env lshw -xml 2>&1|grep -v WARNING")
+        logger.info("lshw execution finished.")
+
         if lshwxml[0] != 0 or len(lshwxml[1]) < 1:
-            # This would kill this module instance. Should we handle it instead?
+            # This would kill this module instance. 
+	    # Should we handle it instead?
+	    # 16/03/06: Die!!
             logger.error("Could not run lshw")
-            raise LSHWRunError, "could not run lshw"
+            raise lshw_run_error, "could not run lshw"
         else:
             xmldata = lshwxml[1]
 
@@ -191,7 +198,7 @@ Current uid: " + id)
 class keyboard:
     """Get keyboard info from /proc/bus/input/devices
     """
-    model = ''
+    
     def __init__(self):
         logger.debug("Getting keyboard data") 
     
@@ -200,7 +207,9 @@ class keyboard:
         except:
             pass
         else:
+
             input = devices_file.readlines()
+
             for line in input:
                 if 'keyboard' in line:
                     k1 = line.replace('N: Name=','')
@@ -209,8 +218,6 @@ class keyboard:
             
 
 class motherboard:
-    product = ''
-    vendor = ''
 
     def __init__(self, hw, index=0):
         if hw.data.has_key('Motherboard'):
@@ -219,15 +226,12 @@ class motherboard:
 
 
 class memory:
-    size = ''
 
     def __init__(self, hw):
         if hw.data.has_key('System Memory'):
             self.size = hw.data['System Memory'][0].get('size', '')
 
 class mouse:
-    product = ''
-    vendor = ''
 
     def __init__(self, hw, index=0):
         if hw.data.has_key('Mouse'):
@@ -236,8 +240,6 @@ class mouse:
 
 
 class modem:
-    product = ''
-    vendor = ''
 
     def __init__(self, hw, index=0):
         if hw.data.has_key('Modem'):
@@ -245,16 +247,12 @@ class modem:
             self.vendor = hw.data['Modem'][index].get('vendor', '')
 
 class dvd_reader:
-    product = ''
     
     def __init__(self, hw, index=0):
         if hw.data.has_key('DVD reader'):
             self.product = hw.data['DVD reader'][index].get('product', '')
 
 class dvd_ram_writer:
-    product = ''
-    serial = ''
-    version = ''
     
     def __init__(self, hw, index=0):
         if hw.data.has_key('DVD-RAM writer'):
@@ -263,9 +261,6 @@ class dvd_ram_writer:
             self.version = hw.data['DVD-RAM writer'][index].get('version', '')
 
 class bios:
-    product = ''
-    vendor = ''
-    version = ''
     
     def __init__(self, hw):
         if hw.data.has_key('BIOS'):
@@ -276,45 +271,42 @@ class bios:
 
 
 class video_board:
-    product = ''
-    vendor = ''
-    memory = ''
-    width = ''
     
     def __init__(self, hw, index=0):
         if hw.data.has_key('VGA compatible controller'):
-            self.product = hw.data['VGA compatible controller'][index].get('product')
-            self.memory = hw.data['VGA compatible controller'][index].get('size')
-            self.width = hw.data['VGA compatible controller'][index].get('width')
-            self.vendor = hw.data['VGA compatible controller'][index].get('vendor')
+            self.product = \
+    hw.data['VGA compatible controller'][index].get('product')
+            self.memory = \
+    hw.data['VGA compatible controller'][index].get('size')
+            self.width = \
+    hw.data['VGA compatible controller'][index].get('width')
+            self.vendor = \
+    hw.data['VGA compatible controller'][index].get('vendor')
 
 class sound_board:
-    product = ''
     
     def __init__(self, hw, index=0):
         if hw.data.has_key('Multimedia audio controller'):
-            self.product = hw.data['Multimedia audio controller'][index].get('product')
+            self.product = \
+    hw.data['Multimedia audio controller'][index].get('product')
 
 class ethernet_board:
-    product = ''
-    width = ''
-    version = ''
-    vendor = ''
-    serial = ''
 
     def __init__(self, hw, index=0):
+
         if hw.data.has_key('Ethernet interface'):
-            self.product = hw.data['Ethernet interface'][index].get('product', '')
-            self.width = hw.data['Ethernet interface'][index].get('width', '')
-            self.vendor = hw.data['Ethernet interface'][index].get('vendor', '')
-            self.version = hw.data['Ethernet interface'][index].get('version', '')
-            self.serial = hw.data['Ethernet interface'][index].get('serial', '')
+            self.product = \
+    hw.data['Ethernet interface'][index].get('product', '')
+            self.width = \
+    hw.data['Ethernet interface'][index].get('width', '')
+            self.vendor = \
+    hw.data['Ethernet interface'][index].get('vendor', '')
+            self.version = \
+    hw.data['Ethernet interface'][index].get('version', '')
+            self.serial = \
+    hw.data['Ethernet interface'][index].get('serial', '')
        
 class cpu:
-    product = ''
-    vendor = ''
-    frequency = ''
-    serial = ''
     
     def __init__(self, hw, index=0):
         if hw.data.has_key('CPU'):
@@ -329,20 +321,6 @@ class hardware:
     # FIXME: motherboard, cpu, etc need support to multiple values. Currently
     # uses index=0
 
-    # Tá certo iniciar o objeto assim, com string em branco? Ele nao vai ser string
-    hw = ''
-    motherboard = ''
-    cpu = ''
-    ethernet_board = ''
-    video_board = ''
-    sound_board = ''
-    bios = ''
-    dvd_reader = ''
-    modem = ''
-    mouse = ''
-    memory = ''
-    keyboard = ''
-    
     def __init__(self):
         logger.debug("Created new instance for the 'hardware' class")
         self.hw = get_hardware()
@@ -363,5 +341,6 @@ if __name__ == '__main__':
 #    print a.data
     x = hardware()
     y = x.motherboard
-    print "h", x.motherboard.vendor, x.ethernet_board.product, x.video_board.product, x.video_board.vendor,\
+    print "h", x.motherboard.vendor, x.ethernet_board.product, \
+	x.video_board.product, x.video_board.vendor,\
         x.dvd_reader.product, x.memory.size
