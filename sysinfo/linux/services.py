@@ -27,23 +27,21 @@ import logging
 logger = logging.getLogger("sysinfo.linux.services")
 
 class smb:
-    """Provides information from the SMB service using information from the smb.conf file.
+    """Provides information from the SMB service using information from 
+    the smb.conf file.
     That may not be an exact science, but it's the best method available.
     """
 
     # FIXME, add "SHARES" collections
 
-
-    smbconf = ''
-    workgroup = ''
-    wins_servers = []
-
     def __init__(self):
-        self.smbconf = self.get_smbconf()
-        self.workgroup = self.get_workgroup()
-        self.wins_servers = self.get_wins_servers()
 
-    def get_smbconf(self):
+        conf = self._get_smbconf()
+        self.workgroup = self._get_workgroup(conf)
+        self.wins_servers = self._get_wins_servers(conf)
+        self.smb_shares = self._get_smb_shares(conf)
+
+    def _get_smbconf(self):
         try:
             # In Debian-like distros
             f = open('/etc/samba/smb.conf','r')
@@ -64,13 +62,13 @@ class smb:
     
 
 
-    def get_workgroup(self):
+    def _get_workgroup(self, smbconf):
         """Gets the workgroup from which the machine is a member
         """
 
         m = re.compile(r'^\s*workgroup\s*=\s*(?P<workgroup>.*)',re.I|re.M)
 
-        p = m.search(self.smbconf)
+        p = m.search(smbconf)
 
         workgroup = ''
         try: 
@@ -81,13 +79,33 @@ class smb:
         return workgroup
         
 
-    def get_wins_servers(self):
+    def _get_smb_shares(self, smbconf):
+        """Gets the SMB shares in the config file
+        """
+        conf = smbconf.split('\n')
+        
+        exclude = [ 'global', 'homes', 'printers', 'print$' ]
+        m = re.compile(r'^\s*\[(?P<share>[^\]]+)\][\s]*(#.*)?$')
+        shares = []
+        for line in conf:
+            p = m.search(line)
+            try:
+                share = p.group('share')
+            except:
+                pass
+            else:
+                if share not in exclude:
+                    shares.append(share)
+
+        return shares
+
+    def _get_wins_servers(self, smbconf):
         """Gets the WINS servers in use by the machine
         """
         
         m = re.compile(r'^\s*wins server\s*=\s*(?P<wins>.*)',re.I|re.M)
 
-        p = m.search(self.smbconf)
+        p = m.search(smbconf)
         wins = []
 
         try:
@@ -99,8 +117,11 @@ class smb:
                 wins = wins_string.split(' ')
             else:
                 logger.error("Could not find WINS server setting")
+
         l = len(wins)
+
         repeat = 2 - l
+
         for foo in range(repeat):
             wins.append('')
         return wins
@@ -111,6 +132,6 @@ if __name__ == '__main__':
 
     #print i.interf_dict
     #print d.dnsdomain, d.dnsresolvers
-    print "teste", s.workgroup,s.wins_servers
+    print "teste", s.workgroup,s.wins_servers,s.smb_shares
 
 

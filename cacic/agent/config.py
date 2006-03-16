@@ -224,6 +224,16 @@ class load:
             logger.debug("Getting smb data from sysinfo.services.smb()")
             smb = sysinfo.services.smb()
 
+            #FIXME: are shares info defined by get_services too?
+            smb_shares = smb.smb_shares
+            share_xml = '<?xml version="1.0" encoding="ISO-8859-1"?><comparts>'
+            for share in smb_shares:
+                share_xml += '<compart><nm_compartilhamento>' + share + '</nm_compartilhamento><nm_dir_compart></nm_dir_compart><cs_tipo_compart>D</cs_tipo_compart><te_comentario>comentario</te_comentario></compart>'
+
+            share_xml += '</comparts>'
+
+            self.share_info = { 'compartilhamentos' : share_xml }
+            self.share_info.update(self.config_info)
 
         if get_software:
             logger.debug("Getting software packages data")
