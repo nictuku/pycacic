@@ -98,8 +98,8 @@ cacic = config.load()
 #print "config:", cacic.remote_cfg
 info = cacic.info
 soft_info = cacic.software_info
-
 share_info = cacic.share_info
+patr_info = cacic.patr_info
 
 log.info("Getting configuration from the server")
 helloCACIC.post_info(info,'cacic','cacic2/ws/get_config.php')
@@ -111,11 +111,14 @@ log.info("Posting hardware information")
 helloCACIC.post_info(info,'cacic','cacic2/ws/set_hardware.php')
 
 log.info("Posting software information")
-helloCACIC.post_info(info, 'cacic','cacic2/ws/set_software.php')
+helloCACIC.post_info(soft_info, 'cacic','cacic2/ws/set_software.php')
 
 log.info("Posting SMB shares information")
 helloCACIC.post_info(share_info, 'cacic','cacic2/ws/set_compart.php')
 
+log.info("Posting Patrimony data")
+helloCACIC.post_info(patr_info, 'cacic','cacic2/ws/set_patrimonio.php')
+
 log.info("Finished execution sucessfuly")
 
-print cacic.share_info
+print cacic.patr_info

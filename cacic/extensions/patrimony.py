@@ -26,33 +26,42 @@ from cacic.agent import http
 
 class patrimony:
 
-    uon1 = {}
-	uon2 = {}
-
     labels = {
         'te_etiqueta1' : '',
 	'te_help_etiqueta1' : '',
+        'in_exibir_etiqueta' : '',
         'te_etiqueta2' : '',
 	'te_help_etiqueta2' : '',
+        'in_exibir_etiqueta2' : '',
         'te_etiqueta3' : '', 
 	'te_help_etiqueta3' : '',
+        'in_exibir_etiqueta3' : '',
         'te_etiqueta4' : '',
 	'te_help_etiqueta4' : '',
+        'in_exibir_etiqueta4' : '',
         'te_etiqueta5' : '',
 	'te_help_etiqueta5' : '',
+        'in_exibir_etiqueta5' : '',
         'te_etiqueta6' : '',
 	'te_help_etiqueta6' : '',
+        'in_exibir_etiqueta6' : '',
         'te_etiqueta7' : '',
 	'te_help_etiqueta7' : '',
+        'in_exibir_etiqueta7' : '',
         'te_etiqueta8' : '',
 	'te_help_etiqueta8' : '',
+        'in_exibir_etiqueta8' : '',
         'te_etiqueta9' : '',
-	'te_help_etiqueta9' : '', }
+	'te_help_etiqueta9' : '', 
+        'in_exibir_etiqueta9' : '',
+    }
 
     def __init__(self):
 	self.labels = self._get_labels()
 	self.uon1 = self._get_uon1()
 	self.uon2 = self._get_uon2()
+        
+
 
     def _get_patr_xml(self, info):
 	patr_xml = http.get_info('cacic',
@@ -62,7 +71,6 @@ class patrimony:
     def _get_labels(self):
 	labels_xml = self._get_patr_xml('config')
 	#labels_xml.replace('<STATUS>OK<\/STATUS>','')
-
 	l = {}
 	for k in self.labels.keys():
 	    s = '<' + k + '>(?P<value>[^<]*)<\/' + k + '>'
@@ -146,9 +154,57 @@ class patrimony:
 
 	return uon2
     
-    def	ask(self, label):
-	
-	for k, v in self.uon1.iteritems():
-	    
-	    print v
+    def	ask(self, labels, uon1, uon2):
 
+        patr = {}
+
+        # Ask UON1
+        if not labels.get('in_exibir_etiqueta1', '') == 'N':
+            print labels['te_etiqueta1'] + ":"
+            print "==============================="
+            for id, value in uon1.iteritems():
+                print value + " ["+ id + "]"
+            uon1 = \
+                raw_input(labels['te_help_etiqueta1'] + " (escolha o número): ")
+            patr['uon1'] = uon1
+        
+        # Ask UON2
+        if uon1 and not labels.get('in_exibir_etiqueta2', '') == 'N':
+            print "\n" + labels['te_etiqueta2'] + ":"
+            print "==============================="
+            for id, value in uon2[uon1].iteritems():
+                print value + " [" + id + "]"
+            uon2 = \
+                raw_input(labels['te_help_etiqueta2'] + " (escolha o número): ")
+            patr['uon2'] = uon2
+        
+        if uon2:
+    
+            other_info = range(3,10)
+            for o_i in other_info:
+                o_i = str(o_i)
+                if not labels.get('in_exibir_etiqueta' + o_i, '') == 'N' :
+                    print "\n" + labels['te_etiqueta' + o_i] + ":"
+                    print "==============================="
+                    set = raw_input(labels['te_help_etiqueta' + o_i] + ": ")
+                    patr['etiqueta' + o_i] = set
+  
+        patr_info = { 
+                'id_unid_organizacional_nivel1' : patr.get('uon1',''),
+                'id_unid_organizacional_nivel2' : patr.get('uon2',''),
+                'te_localizacao_complementar'   : patr.get('etiqueta3',''),
+                'te_info_patrimonio1'           : patr.get('etiqueta4',''),
+                'te_info_patrimonio2'           : patr.get('etiqueta5',''),
+                'te_info_patrimonio3'           : patr.get('etiqueta6',''),
+                'te_info_patrimonio4'           : patr.get('etiqueta7',''),
+                'te_info_patrimonio5'           : patr.get('etiqueta8',''),
+                'te_info_patrimonio6'           : patr.get('etiqueta9',''),
+                }
+
+        return patr_info
+
+if __name__ == '__main__':
+    a = patrimony()
+    print a.labels
+    bla = a.ask(a.labels, a.uon1, a.uon2)
+    print bla

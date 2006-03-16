@@ -40,6 +40,7 @@ import sysinfo
 
 import StringIO
 import gzip
+from cacic.extensions.patrimony import patrimony
 
 logger = logging.getLogger("cacic.agent.config")
 
@@ -155,7 +156,6 @@ get_software = True
 class load:
     info = {}
     config_info = {}
-    software_info = {}
     remote_cfg = {}
     remote_raw_cfg = ''
     logger.debug("Loading config.load class")
@@ -176,15 +176,15 @@ class load:
 
         self.remote_cfg['patrimony_collection'] = parse_remote_raw_cfg(
          'patrimony_collection', '<cs_coleta_patrimonio>\s*s\s*<\/cs_coleta_patrimonio>', 
-         self.remote_raw_cfg, 'boolean')
+        self.remote_raw_cfg, 'boolean')
 
         self.remote_cfg['hardware_collection'] = parse_remote_raw_cfg(
          'hardware_collection', '<cs_coleta_hardware>\s*S\s*<\/cs_coleta_hardware>', 
-         self.remote_raw_cfg, 'boolean')
+        self.remote_raw_cfg, 'boolean')
 
         self.remote_cfg['disk_collection'] = parse_remote_raw_cfg(
          'disk_collection', '<cs_coleta_unid_disc>\s*S\s*<\/cs_coleta_unid_disc>', 
-         self.remote_raw_cfg, 'boolean')
+        self.remote_raw_cfg, 'boolean')
 
         self.remote_cfg['ignore_macs'] = parse_remote_raw_cfg(
          'ignore_macs', 
@@ -217,7 +217,14 @@ class load:
 
         }
 
- 
+        # FIXME: use a "get_patrimony" config 
+        if get_services:
+            logger.debug(
+                "Getting patrimony data from cacic.extensions.patrimony"
+                )
+            patrim = patrimony()
+            self.patr_info = patrim.ask(patrim.labels, patrim.uon1, patrim.uon2)
+            self.patr_info.update(self.config_info)
 
         # FIXME: if mac_address is not in remote_cfg['ignore_macs']
         if get_services:
@@ -236,7 +243,9 @@ class load:
             self.share_info.update(self.config_info)
 
         if get_software:
+
             logger.debug("Getting software packages data")
+
             pkgs = sysinfo.software.packages()
                         
             packages = ''
@@ -257,8 +266,9 @@ class load:
             self.software_info['te_inventario_softwares'] = packages
             self.software_info['te_variaveis_ambiente'] = environ
             #print "PACKAGES:", packages
-        
+ 
         if get_services and get_hard:
+
             logger.debug("Populating 'info' dictionary")
 
             self.info =  {
