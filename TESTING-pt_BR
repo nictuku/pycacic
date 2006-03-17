@@ -82,27 +82,69 @@ CDROM
 Teclado
 Mouse
 
-Opções configuráveis:
+Softwares inventariados:
+------------------------
+
+A tabela lista softwares está funcionando apenas para distribuições
+baseadas no Debian (que usam APT).
+
+Sistemas monitorados:
 ---------------------
+
+Não se aplica integralmente ao agente para GNU/Linux
+
+
+Coleta de patrimônio:
+---------------------
+
+Toda vez que o pycacic é executado ele faz o questionário sobre as
+informações de patrimônio. Esse comportamento incômodo será corrigido, mas
+é o suficiente para testarmos as funcionalidades básicas do PyCACIC.
+
+Além disso, caso seu terminal não seja ISO-8859-1, os acentos não aparecerão
+corretamente.
+
+Antivírus OfficeScan:
+--------------------
+
+Não se aplica ao agente para GNU/Linux
+
+Compartilhamentos de diretórios e impressoras:
+----------------------------------------------
+
+Atualmente mostra apenas o nome dos compartilhamentos detectados.
+
+Unidades de Discos e Particionamentos:
+--------------------------------------
+
+Não foi implementado ainda.
+
+
+Configurações do agente:
+------------------------
 
 Apenas a opção "server" é configurável atualmente.
 
-Crie um arquivo /usr/local/etc/pycacic/cacic.py ou /etc/pycacic/cacic.py com o
-seguinte conteúdo:
+Crie um arquivo /usr/local/etc/pycacic/agent.conf ou /etc/pycacic/agent.conf
+com o seguinte conteúdo:
 
 server = '<servidor do cacic>'
+interface = '<a interface que deve ser analisada' # opcional
 
 Como executar os testes:
 ------------------------
 
-Ainda não há um modo de testes, como há no agente em perl. Portanto será necessário
-efetivamente enviar as informações para o gerente e, na página do CACIC,
-verificar se as coletas de hardware estão "batendo" com a realidade.
+Não um "modo de testes" no PyCACIC, como há no agente em perl. 
+Portanto será necessário efetivamente enviar as informações para o gerente e,
+na página do CACIC, verificar se as coletas de hardware estão "batendo" com 
+a realidade.
 
-Estando no diretório onde se encontra o pycacic.py, o comando para chamar o
+Além disso, uma quantidade de informações é enviada ao syslog.
+
+Estando no diretório onde se encontra o pycacic, o comando para chamar o
 agente deve ser *executado como root*:
 
-# python pycacic.py
+# python pycacic
 
 A mensagem final deve ser algo como:
 
@@ -110,22 +152,18 @@ A mensagem final deve ser algo como:
 sucessfuly"
 
 Peço desculpas pelas mensagens estarem em inglês, por enquanto. Isso faz parte
-da intenção de fornecer um agente multi-línguas, mas em breve as mensagens deverão
-estar disponíveis também em português.
-
+da intenção de fornecer um agente multi-línguas, mas em breve as mensagens 
+deverão estar disponíveis também em português.
 
 Como relatar as questões:
 -------------------------
 
 Todos os problemas podem ser relatados na lista cacic-desenvolvimento.
 
-Em caso de problemas, seria interessante se fosse enviado em anexo para lista o resultado do
-comando "lshw -xml". Exemplo:
+Em caso de problemas, seria interessante se fosse enviado em anexo para lista
+o resultado do comando "lshw -xml". Exemplo:
 
 # lshw -xml > /tmp/`hostname`.xml
-
-
-
 
 Problemas conhecidos:
 ---------------------
@@ -150,4 +188,4 @@ interface, no momento, não pode ser alterada.
 
 
 - Yves Junqueira
-yves.junqueira@gmail.com
+yves.junqueira@mds.gov.br

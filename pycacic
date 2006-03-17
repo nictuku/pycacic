@@ -82,7 +82,7 @@ formatter = logging.Formatter(
     )
 hdlr.setFormatter(formatter)
 log.addHandler(hdlr)
-log.setLevel(logging.INFO)
+log.setLevel(logging.DEBUG)
 
 
 log.info("Starting PyCACIC.")
