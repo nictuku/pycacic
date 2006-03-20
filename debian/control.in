@@ -1,0 +1,16 @@
+Source: pycacic
+Section: admin
+Priority: optional
+Maintainer: Yves Junqueira <yves@cetico.org>
+Build-Depends: @cdbs@, python-dev
+Standards-Version: 3.6.1
+
+Package: python-sysinfo
+Architecture: all
+Depends: python (>= 2.3), lshw
+Description: Multi-platform system information library
+ Python-sysinfo provides an abstraction layer to system information for
+ hardware, software and services in the local computer.
+ .
+ The GNU/Linux version uses lshw to collect hardware info and the other data
+ come from config files, /proc and such.
