@@ -260,7 +260,8 @@ class interface:
     def _get_netmask(self,interf=None):
         """Shows the interface's respective IP netmask
         """
-        
+        return '' 
+ 
 	if interf:
             h = re.compile(r'Mask:(?P<netmask>[\w.]+)', re.I)
             w = h.search(self.interf_dict[interf])

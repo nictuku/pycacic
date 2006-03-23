@@ -31,20 +31,21 @@ import sys
 class packages:
 
     installed = []
-    installed_ver = {}
-    update_candidates = {}
+    installed_ver = {} # package : version
+    update_candidates = {} # package : new_version
     
     def __init__(self):
-        # FIXME: These works, but isn't it ugly?
+        # FIXME: dup the filehandles and hide messages
         #os.close(1)
         #os.close(2)
         c = cache()
-        self.installed = c.installed_packages.keys()
+        self.installed_ver = c.installed_packages
+        self.installed = self.installed_ver.keys()
         self.installed.sort()
         self.update_candidates = c.update_candidates
         
-        for software in self.installed:
-            self.installed_ver[software] = c.installed_packages[software].VerStr
+#        for software in self.installed:
+#            self.installed_ver[software] = c.installed_packages[software].VerStr
         
 
 class cache:
@@ -52,82 +53,47 @@ class cache:
     # {'Name' : 'Version'}
     installed_packages = {}
     update_candidates = {}
-    cache = ''
     
     def __init__(self):
 
         apt_pkg.init()
         self.cache = apt_pkg.GetCache()
-        self.installed_packages = self._get_installed_packages()
-        self.update_candidates = self._get_update_candidates()
+        self.installed_packages, self.update_candidates = \
+            self._read_packages(self.cache.Packages)
+
+
+    def _read_packages(self, packages):
+        installed, upgradable = {}, {}
+
+        # from the examples/checkstate.py file in python-apt package
+        for package in packages:
+                versions = package.VersionList
+                if not versions:
+                        continue
+                version = versions[0]
+                for other_version in versions:
+                        if apt_pkg.VersionCompare(version.VerStr, other_version.VerStr)<0:
+                                version = other_version
+                if package.CurrentVer:
+                        installed[package.Name] = package.CurrentVer.VerStr
+                        current = package.CurrentVer
+                        if apt_pkg.VersionCompare(current.VerStr, version.VerStr)<0:
+                                upgradable[package.Name] = version.VerStr
+#                                break
+#                        else:
+#                                updated[package.Name] = current
+#                else:
+#                        uninstalled[package.Name] = version
+        #print "installed:", installed
+        #print "Update candidates:", upgradable
+        return installed, upgradable
+      
         
-
-    def _get_update_candidates(self):
-
-        update_pkgs = {} 
-
-        depcache = apt_pkg.GetDepCache(self.cache)
-        depcache.ReadPinFile()
-        depcache.Init()
-        depcache.Upgrade()
-
-        for pkg in self.cache.Packages:
-            #if pkg.CurrentVer:
-            #    update_pkgs[pkg.Name] = pkg.CurrentVer
-            #    print "ver", pkg.CurrentVer.VerStr
-
-                #for depend in pkg.CurrentVer.DependsList.get("Depends", []):
-                #    print "depends", depend,
-            if depcache.MarkedInstall(pkg) or depcache.MarkedUpgrade(pkg):
-                if depcache.GetCandidateVer(pkg) != pkg.CurrentVer:
-                    update_pkgs[pkg.Name] = depcache.GetCandidateVer(pkg).VerStr
-         #           print "Update", pkg.Name
-            #    sys.exit(0)
-
-        return update_pkgs
-       
- 
-    def _get_installed_packages(self):
-        inst_pkgs = {}
-        
-        # FIXME: change to InitSystem, InitConfig and hide info messages
-        #apt_pkg.init()
-        # get caches
-        #depcache = apt_pkg.GetDepCache(cache)
-
-        # read the pin files
-        #depcache.ReadPinFile()
-        # read the synaptic pins too
-        #if os.path.exists(SYNAPTIC_PINFILE):
-        #    depcache.ReadPinFile(SYNAPTIC_PINFILE)
-        
-        # init the depcache
-        #depcache.Init()
-        
-        #if depcache.BrokenCount > 0:
-        #    sys.stderr.write("E: BrokenCount > 0")
-        #    sys.exit(-1)
-        
-        #depcache.Upgrade()
-        
-        # version comparison function:
-        # http://mail.python.org/pipermail/python-list/2005-March/272909.html
-        for pkg in self.cache.Packages:
-            if pkg.CurrentVer:
-                inst_pkgs[pkg.Name] = pkg.CurrentVer
-            #    print "ver", pkg.CurrentVer.VerStr
-                
-                #for depend in pkg.CurrentVer.DependsList.get("Depends", []):
-                #    print "depends", depend,
-         #   if depcache.MarkedInstall(pkg) or depcache.MarkedUpgrade(pkg):
-         #       if depcache.GetCandidateVer(pkg) != pkg.CurrentVer:
-         #           print "Update", pkg.Name
-            #    sys.exit(0)
-        return inst_pkgs        
-
 if __name__ == '__main__':
     s = packages()
-    #print "instalados", s.installed
-    #print "instalados_versao", s.installed_ver
+    #c = cache()
+    #print c.update_candidates 
+    print "instalados", s.installed
+    print "instalados_versao", s.installed_ver
     print "update", s.update_candidates
     

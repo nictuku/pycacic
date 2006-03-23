@@ -219,6 +219,9 @@ class keyboard:
 
 class motherboard:
 
+    product = ''
+    vendor = ''
+
     def __init__(self, hw, index=0):
         if hw.data.has_key('Motherboard'):
             self.product = hw.data['Motherboard'][index].get('product', '')
@@ -227,11 +230,16 @@ class motherboard:
 
 class memory:
 
+    size = ''
+
     def __init__(self, hw):
         if hw.data.has_key('System Memory'):
             self.size = hw.data['System Memory'][0].get('size', '')
 
 class mouse:
+
+    product = ''
+    vendor = ''
 
     def __init__(self, hw, index=0):
         if hw.data.has_key('Mouse'):
@@ -241,19 +249,29 @@ class mouse:
 
 class modem:
 
+    product = ''
+    vendor = ''
+
     def __init__(self, hw, index=0):
         if hw.data.has_key('Modem'):
             self.product = hw.data['Modem'][index].get('product', '')
             self.vendor = hw.data['Modem'][index].get('vendor', '')
 
 class dvd_reader:
-    
+   
+    product = ''
+ 
     def __init__(self, hw, index=0):
         if hw.data.has_key('DVD reader'):
             self.product = hw.data['DVD reader'][index].get('product', '')
 
 class dvd_ram_writer:
-    
+
+    product = ''
+    serial = ''
+    vendor = ''
+
+
     def __init__(self, hw, index=0):
         if hw.data.has_key('DVD-RAM writer'):
             self.product = hw.data['DVD-RAM writer'][index].get('product', '')
@@ -261,6 +279,10 @@ class dvd_ram_writer:
             self.version = hw.data['DVD-RAM writer'][index].get('version', '')
 
 class bios:
+
+    product = ''
+    size = ''
+    vendor = ''
     
     def __init__(self, hw):
         if hw.data.has_key('BIOS'):
@@ -271,6 +293,11 @@ class bios:
 
 
 class video_board:
+
+    product = ''
+    size = ''
+    width = ''
+    vendor = ''
     
     def __init__(self, hw, index=0):
         if hw.data.has_key('VGA compatible controller'):
@@ -284,13 +311,22 @@ class video_board:
     hw.data['VGA compatible controller'][index].get('vendor')
 
 class sound_board:
-    
+
+    product = ''
+ 
     def __init__(self, hw, index=0):
         if hw.data.has_key('Multimedia audio controller'):
             self.product = \
     hw.data['Multimedia audio controller'][index].get('product')
 
 class ethernet_board:
+
+    product = ''
+    size = ''
+    vendor = ''
+    width = ''
+    vendor = ''
+    serial = ''
 
     def __init__(self, hw, index=0):
 
@@ -307,6 +343,10 @@ class ethernet_board:
     hw.data['Ethernet interface'][index].get('serial', '')
        
 class cpu:
+
+    product = ''
+    size = ''
+    vendor = ''
     
     def __init__(self, hw, index=0):
         if hw.data.has_key('CPU'):

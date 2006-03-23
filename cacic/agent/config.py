@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-#   Copyright (C) 2006 José de Paula Eufrásio Junior (jose.junior@gmail.com) AND
-#                      Yves Junqueira (yves.junqueira@gmail.com)
+#   Copyright (C) 2006 Ministério do Desenvolvimento Social e Combate à Fome,
+#                      Brasil <listacgisustentacao@mds.gov.br>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -160,7 +160,7 @@ class load:
     remote_raw_cfg = ''
     logger.debug("Loading config.load class")
 
-    def __init__(self):
+    def __init__(self, param_cfg):
         logger.debug("Instantiating config.load")
 
         net = sysinfo.network()
@@ -218,7 +218,7 @@ class load:
         }
 
         # FIXME: use a "get_patrimony" config 
-        if get_services:
+        if param_cfg.get('get_patr', False):
             logger.debug(
                 "Getting patrimony data from cacic.extensions.patrimony"
                 )

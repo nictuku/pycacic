@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-#   Copyright (C) 2006 José de Paula Eufrásio Junior (jose.junior@gmail.com) AND
-#                      Yves Junqueira (yves.junqueira@gmail.com)
+#   Copyright (C) 2006 Ministério do Desenvolvimento Social e Combate à Fome,
+#                      Brasil <listacgisustentacao@mds.gov.br>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by

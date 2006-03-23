@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-#   Copyright (C) 2006 José de Paula Eufrásio Junior (jose.junior@gmail.com) AND
-#                      Yves Junqueira (yves.junqueira@gmail.com)
+#   Copyright (C) 2006 Ministério do Desenvolvimento Social e Combate à Fome,
+#                      Brasil <listacgisustentacao@mds.gov.br>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -48,6 +48,8 @@ metodologias e estruturas.
 
 import logging
 import logging.handlers
+import getopt
+import sys
 
 # Formato de data alternativa
 #format = "%(asctime)s cacic[%(process)d] %(levelname)s \
@@ -84,6 +86,13 @@ hdlr.setFormatter(formatter)
 log.addHandler(hdlr)
 log.setLevel(logging.DEBUG)
 
+optlist, list = getopt.getopt(sys.argv[1:], 'p')
+
+param_cfg = {}
+
+for opt in optlist:
+    if opt[0] == '-p':
+        param_cfg['get_patr'] = True
 
 log.info("Starting PyCACIC.")
 log.debug("Loading agent.http")
@@ -94,12 +103,22 @@ from cacic.agent import config
 helloCACIC = agent.http
 
 log.debug("Loading cacic.agent.config.load()")
-cacic = config.load()
-#print "config:", cacic.remote_cfg
+
+cacic = config.load(param_cfg)
+
 info = cacic.info
 soft_info = cacic.software_info
 share_info = cacic.share_info
-patr_info = cacic.patr_info
+
+#if param_cfg.get('get_patr', False):
+#    print "PATRIMONIO"
+#    patrim = patrimony.patrimony()
+#    patr_info = patrim.ask(patrim.labels, patrim.uon1, patrim.uon2)
+#    patr_info.update(self.config_info)
+#else:
+#    print "NAO PATRIMONIO"
+
+#patr_info = cacic.patr_info
 
 log.info("Getting configuration from the server")
 helloCACIC.post_info(info,'cacic','cacic2/ws/get_config.php')
@@ -116,9 +135,10 @@ helloCACIC.post_info(soft_info, 'cacic','cacic2/ws/set_software.php')
 log.info("Posting SMB shares information")
 helloCACIC.post_info(share_info, 'cacic','cacic2/ws/set_compart.php')
 
-log.info("Posting Patrimony data")
-helloCACIC.post_info(patr_info, 'cacic','cacic2/ws/set_patrimonio.php')
+if param_cfg.get('get_patr', False):
+    log.info("Posting Patrimony data")
+    helloCACIC.post_info(patr_info, 'cacic','cacic2/ws/set_patrimonio.php')
+    print cacic.patr_info
 
 log.info("Finished execution sucessfuly")
 
-print cacic.patr_info

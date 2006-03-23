@@ -1,9 +1,5 @@
 PyCACIC - Versão de desenvolvimento
-
-
-VERSÃO DE RASCUNHO 
-SUJEITO A REVISÃO
-
+- Yves Junqueira <yves.junqueira@mds.gov.br>
 
 
 Instruções para beta-testing
@@ -36,15 +32,38 @@ Beta Testing:
 -------------
 
 Muitos colaboladores da comunidade se ofereceram a ajudar o projeto pycacic.
-Sendo assim, e considerando que a biblioteca "sysinfo" precisa ser
-testada no Linux, formulou-se este documento como sugestão de metodologia para
+Sendo assim, formulou-se este documento como sugestão de metodologia para
 este trabalho.
 
-Numa próxima fase testaremos também o sysinfo para Windows.
+Numa próxima fase testaremos também o PyCACIC para Windows.
+
+Dependências:
+-------------
+Atualmente o PyCACIC funciona apenas em Debian-like.
+
+Pacotes necessários:
+- lshw
+- python-apt
+
+Como executar:
+--------------
+
+O PyCACIC, na versão atual, deve ser executado como root. 
+
+# ./pycacic
+
+Para realizar testes das coletas de patrimônio:
+
+# ./pycacic -p
+
+Não é sugerido no momento instalar o pycacic no sistema, e sim testá-lo
+no próprio diretório em que foi descompactado.
+
+== Status do projeto ==
+=======================
 
 As seguintes coletas foram implementadas até agora, as quais devem estar de
 acordo com os dados efetivos do computador.
-
 
 Rede:
 -----
@@ -59,6 +78,7 @@ Serv. DNS Secundario
 Endereço de Rede
 Servidor DHCP
 Gateway
+Ultimo Login
 
 Hardware:
 ---------
@@ -96,12 +116,8 @@ Não se aplica integralmente ao agente para GNU/Linux
 Coleta de patrimônio:
 ---------------------
 
-Toda vez que o pycacic é executado ele faz o questionário sobre as
-informações de patrimônio. Esse comportamento incômodo será corrigido, mas
-é o suficiente para testarmos as funcionalidades básicas do PyCACIC.
-
-Além disso, caso seu terminal não seja ISO-8859-1, os acentos não aparecerão
-corretamente.
+Caso seu terminal não seja ISO-8859-1, os acentos não aparecerão corretamente,
+mas isso deverá ser corrigido em breve.
 
 Antivírus OfficeScan:
 --------------------
@@ -127,18 +143,21 @@ Apenas a opção "server" é configurável atualmente.
 Crie um arquivo /usr/local/etc/pycacic/agent.conf ou /etc/pycacic/agent.conf
 com o seguinte conteúdo:
 
+[agent]
 server = '<servidor do cacic>'
 interface = '<a interface que deve ser analisada' # opcional
+
 
 Como executar os testes:
 ------------------------
 
-Não um "modo de testes" no PyCACIC, como há no agente em perl. 
-Portanto será necessário efetivamente enviar as informações para o gerente e,
-na página do CACIC, verificar se as coletas de hardware estão "batendo" com 
-a realidade.
+Não há um "modo de testes" no PyCACIC, como há no agente em perl. 
 
-Além disso, uma quantidade de informações é enviada ao syslog.
+Portanto será necessário efetivamente enviar as informações para o gerente e,
+na página do CACIC, verificar se as coletas de hardware conferem com a reali-
+dade.
+
+Além disso, muitas informações interessantes são enviada ao syslog.
 
 Estando no diretório onde se encontra o pycacic, o comando para chamar o
 agente deve ser *executado como root*:
@@ -151,7 +170,7 @@ A mensagem final deve ser algo como:
 sucessfuly"
 
 Peço desculpas pelas mensagens estarem em inglês, por enquanto. Isso faz parte
-da intenção de fornecer um agente multi-línguas, mas em breve as mensagens 
+da intenção de fornecer um agente multi-línguas. Em breve as mensagens 
 deverão estar disponíveis também em português.
 
 Como relatar as questões:
@@ -172,10 +191,6 @@ No momento, as seguintes informações de hardware não são coletadas:
 - No. serial da CPU
 - Resolução da placa de vídeo
 - Detalhes da memória RAM
-
-A seguinte informação de rede não está sendo coletada:
-
-- Último Login
 
 As demais informações devem aparecer, se aplicável (exemplo: Modem, CD/DVD não
 são itens existentes em todas as máquinas, mas se a máquina possuir um Modem,
