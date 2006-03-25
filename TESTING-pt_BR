@@ -144,8 +144,8 @@ Crie um arquivo /usr/local/etc/pycacic/agent.conf ou /etc/pycacic/agent.conf
 com o seguinte conteúdo:
 
 [agent]
-server = '<servidor do cacic>'
-interface = '<a interface que deve ser analisada' # opcional
+server = <servidor do cacic>
+interface = <a interface que deve ser analisada> 
 
 
 Como executar os testes:

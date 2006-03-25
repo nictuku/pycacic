@@ -253,6 +253,8 @@ class interface:
 
     def _get_network(self,ip=None,netmask=None):
 
+        network = ''
+
         if ip and netmask:
             (host, network) = convert_ip_to_net_and_host(ip, netmask)
         return network
@@ -260,7 +262,7 @@ class interface:
     def _get_netmask(self,interf=None):
         """Shows the interface's respective IP netmask
         """
-        return '' 
+        netmask = '' 
  
 	if interf:
             h = re.compile(r'Mask:(?P<netmask>[\w.]+)', re.I)

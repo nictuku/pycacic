@@ -118,7 +118,6 @@ share_info = cacic.share_info
 #else:
 #    print "NAO PATRIMONIO"
 
-#patr_info = cacic.patr_info
 
 log.info("Getting configuration from the server")
 helloCACIC.post_info(info,'cacic','cacic2/ws/get_config.php')
@@ -136,6 +135,7 @@ log.info("Posting SMB shares information")
 helloCACIC.post_info(share_info, 'cacic','cacic2/ws/set_compart.php')
 
 if param_cfg.get('get_patr', False):
+    patr_info = cacic.patr_info
     log.info("Posting Patrimony data")
     helloCACIC.post_info(patr_info, 'cacic','cacic2/ws/set_patrimonio.php')
     print cacic.patr_info
