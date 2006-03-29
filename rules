@@ -4,12 +4,6 @@ include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/python-distutils.mk
 
 binary-post-install/python-sysinfo::
-	mkdir -p debian/python-sysinfo/usr/lib/site-python/sysinfo	
-	for p in python2.4 python2.3; do \
-	if [ -d "debian/python-sysinfo/usr/lib/$$p" ]; then \
-	echo Moving debian/python-sysinfo/usr/lib/$$p ; \
-	mv -v debian/python-sysinfo/usr/lib/$$p/site-packages/sysinfo debian/python-sysinfo/usr/lib/site-python/sysinfo;\
-	rm debian/python-sysinfo/usr/lib/$$p -rf ; \
-	fi; \
-	rm debian/python-sysinfo/usr/bin -rf ; \
-	done
+	mv debian/python-sysinfo/usr/lib/python*/site-packages/sysinfo/* debian/python-sysinfo/usr/lib/site-python/sysinfo
+	rm -rf debian/python-sysinfo/usr/lib/python*
+	rm -rf debian/python-sysinfo/usr/bin
