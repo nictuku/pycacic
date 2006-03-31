@@ -7,7 +7,7 @@ Standards-Version: 3.6.1
 
 Package: python-sysinfo
 Architecture: any
-Depends: python (>= 2.3), python (<< 2.5), lshw
+Depends: python (>= 2.3), python (<< 2.5), lshw, python-apt (>= 0.5.10)
 Description: Multi-platform system information library
  Python-sysinfo provides an abstraction layer to system information for
  hardware, software and services in the local computer.

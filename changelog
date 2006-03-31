@@ -1,6 +1,6 @@
 pycacic (0.3-1) dapper; urgency=low
 
-  * Initial release 
+  * Initial release (closes #360169) 
 
  -- Yves Junqueira (nictuku) <yves@cetico.org>  Fri,  20 Mar 2006 18:32:29 -0300
   
