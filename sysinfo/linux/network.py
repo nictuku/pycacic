@@ -95,6 +95,10 @@ class resolv:
     and populates resolvconf, dnsdomain and dnsresolvers
     """
 
+    self.resolvconf = ''
+    self.dnsdomain = ''
+    self.dnsresolvers = ''
+
     def __init__(self):
         # Return empty resolvconf. Do not raise error.
 
@@ -152,6 +156,10 @@ class resolv:
 class misc:
     """Gets miscelaneous information from the system.
     """
+
+    self.hostname = ''
+    self.default_gateway = ''
+    self.interfaces = []
    
     def __init__(self, ifc):
         self.hostname = socket.gethostname()
@@ -214,6 +222,11 @@ class misc:
 class interface:
     """Retrieves interface specific information
     """
+
+    self.ip_addresses = []
+    self.mac_address = ''
+    self.netmask = ''
+    self.ip_network = ''
 
     def __init__(self, ifc, interf=None):
         self.interf_dict = ifc.interf_dict
@@ -336,12 +349,18 @@ class interface:
 
         o = re.compile('option\s+dhcp-server-identifier\s+(?P<dhcp_server>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s*;')
         k = o.search(lease)
-        server = k.group('dhcp_server')
+
+        if k: 
+            server = k.group('dhcp_server')
+        else:
+            server = ''
 
         # Shows the last lease
         return server
 
 class last_logon:
+
+    self.last_user = ''
 
     def __init__(self):
         self.last_user = self._get_last_user()
