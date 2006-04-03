@@ -3,7 +3,9 @@
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/python-distutils.mk
 
-binary-post-install/python-sysinfo::
-	mv debian/python-sysinfo/usr/lib/python*/site-packages/sysinfo/* debian/python-sysinfo/usr/lib/site-python/sysinfo
-	rm -rf debian/python-sysinfo/usr/lib/python*
-	rm -rf debian/python-sysinfo/usr/bin
+binary-indep:
+	echo oi
+	dh_installdocs -ppython-sysinfo
+	dh_installdocs -ppython2.3-sysinfo -i doc/README.sysinfo  doc/sysinfo-example.py
+	dh_installdocs -ppython2.4-sysinfo -i doc/README.sysinfo doc/sysinfo-example.py
+
