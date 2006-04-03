@@ -9,9 +9,7 @@ setup(name='PyCACIC',
       maintainer_email='yves@cetico.org',
       url='https://opensvn.csie.org/traccgi/pycacic',
       scripts=['pycacic'],
-#      package_dir = {'nwu_agent': 'nwu-agent/nwu_agent', 
-	    #'nwu_server': 'nwu-server/nwu_server'},
-      packages=['cacic', 'cacic.agent', 'cacic.extensions', 
+      packages=[
+    #'cacic', 'cacic.agent', 'cacic.extensions', 
 	'sysinfo', 'sysinfo.linux'],
-#      data_files=[('/etc/nwu', ['nwu-agent/sample_conf/agent.conf'])]
      )

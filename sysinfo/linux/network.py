@@ -95,9 +95,9 @@ class resolv:
     and populates resolvconf, dnsdomain and dnsresolvers
     """
 
-    self.resolvconf = ''
-    self.dnsdomain = ''
-    self.dnsresolvers = ''
+    resolvconf = ''
+    dnsdomain = ''
+    dnsresolvers = ''
 
     def __init__(self):
         # Return empty resolvconf. Do not raise error.
@@ -157,9 +157,9 @@ class misc:
     """Gets miscelaneous information from the system.
     """
 
-    self.hostname = ''
-    self.default_gateway = ''
-    self.interfaces = []
+    hostname = ''
+    default_gateway = ''
+    interfaces = []
    
     def __init__(self, ifc):
         self.hostname = socket.gethostname()
@@ -223,10 +223,10 @@ class interface:
     """Retrieves interface specific information
     """
 
-    self.ip_addresses = []
-    self.mac_address = ''
-    self.netmask = ''
-    self.ip_network = ''
+    ip_addresses = []
+    mac_address = ''
+    netmask = ''
+    ip_network = ''
 
     def __init__(self, ifc, interf=None):
         self.interf_dict = ifc.interf_dict
@@ -360,7 +360,7 @@ class interface:
 
 class last_logon:
 
-    self.last_user = ''
+    last_user = ''
 
     def __init__(self):
         self.last_user = self._get_last_user()
