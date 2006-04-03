@@ -2,12 +2,12 @@ Source: pycacic
 Section: python 
 Priority: optional
 Maintainer: Yves Junqueira (nictuku) <yves@cetico.org>
-Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 4.1.0), python2.4-dev, python2.3-dev, python (>= 2.4)
+Build-Depends: cdbs (>= 0.4.23-1.1), debhelper (>= 4.1.0), python2.4-dev, python2.3-dev
 Standards-Version: 3.6.1
 
 Package: python-sysinfo
-Architecture: any
-Depends: python2.4-sysinfo
+Architecture: all
+Depends: python2.3-sysinfo
 Description: Multi-platform system information library
  Python-sysinfo provides an abstraction layer to system information for
  hardware, software and services in the local computer.
@@ -21,7 +21,7 @@ Description: Multi-platform system information library
  and python-sysinfo.
 
 Package: python2.4-sysinfo
-Architecture: any
+Architecture: all
 Depends: python2.4, lshw, python2.4-apt (>= 0.5.10)
 Description: Multi-platform system information library
  Python-sysinfo provides an abstraction layer to system information for
@@ -33,7 +33,7 @@ Description: Multi-platform system information library
  See https://dev.ubuntubrasil.org/trac/pycacic
 
 Package: python2.3-sysinfo
-Architecture: any
+Architecture: all
 Depends: python2.3, lshw, python2.3-apt (>= 0.5.10)
 Description: Multi-platform system information library
  Python-sysinfo provides an abstraction layer to system information for
