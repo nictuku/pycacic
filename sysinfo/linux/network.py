@@ -246,7 +246,13 @@ class interface:
         # FIXME: get_address currently returns a singleton list.
 
         h = re.compile(r'inet add?r:(?P<ip_addr>[\w.]+)', re.I)
-        w = h.search(self.interf_dict[interf])
+        try:
+            w = h.search(self.interf_dict[interf])
+        except KeyError:
+            logger.error("Could not find " + str(interf) + " in the list of \
+active network interfaces. Please review your configuration.")
+            sys.exit(1)
+
         ip_addrs = []
         if w:
             ip_addrs.append(w.group('ip_addr'))
