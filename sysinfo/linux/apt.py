@@ -21,79 +21,95 @@
 """Provides package management system information
 """
 
-
-# http://users.sarai.net/shehjar/download/py-apt-tut.txt
+# thanks to http://users.sarai.net/shehjar/download/py-apt-tut.txt
 
 import apt_pkg
 import os
 import sys
+import commands
+import re
 
 class packages:
 
     installed = []
-    installed_ver = {} # package : version
-    update_candidates = {} # package : new_version
+    installed_ver = {}
+    update_candidates = {}
     
     def __init__(self):
-        # FIXME: dup the filehandles and hide messages
+        # FIXME: These works, but isn't it ugly?
         #os.close(1)
         #os.close(2)
         c = cache()
-        self.installed_ver = c.installed_packages
-        self.installed = self.installed_ver.keys()
+        self.installed = c.installed_packages.keys()
         self.installed.sort()
         self.update_candidates = c.update_candidates
         
-#        for software in self.installed:
-#            self.installed_ver[software] = c.installed_packages[software].VerStr
+        for software in self.installed:
+            self.installed_ver[software] = c.installed_packages[software].VerStr
         
 
 class cache:
 
-    # {'Name' : 'Version'}
     installed_packages = {}
     update_candidates = {}
+    cache = ''
     
     def __init__(self):
 
         apt_pkg.init()
         self.cache = apt_pkg.GetCache()
-        self.installed_packages, self.update_candidates = \
-            self._read_packages(self.cache.Packages)
-
-
-    def _read_packages(self, packages):
-        installed, upgradable = {}, {}
-
-        # from the examples/checkstate.py file in python-apt package
-        for package in packages:
-                versions = package.VersionList
-                if not versions:
-                        continue
-                version = versions[0]
-                for other_version in versions:
-                        if apt_pkg.VersionCompare(version.VerStr, other_version.VerStr)<0:
-                                version = other_version
-                if package.CurrentVer:
-                        installed[package.Name] = package.CurrentVer.VerStr
-                        current = package.CurrentVer
-                        if apt_pkg.VersionCompare(current.VerStr, version.VerStr)<0:
-                                upgradable[package.Name] = version.VerStr
-#                                break
-#                        else:
-#                                updated[package.Name] = current
-#                else:
-#                        uninstalled[package.Name] = version
-        #print "installed:", installed
-        #print "Update candidates:", upgradable
-        return installed, upgradable
-      
+        self.installed_packages = self._get_installed_packages()
+        self.update_candidates = self._get_update_candidates()
         
+
+    def _get_update_candidates(self):
+
+        update_pkgs = {} 
+
+        try:
+            depcache = apt_pkg.GetDepCache(self.cache)
+
+        except AttributeError:
+            # We are using an old version of libapt (like sarge's)
+            aptget = commands.getstatusoutput("export LANGUAGE=C; /usr/bin/env apt-get -s upgrade")
+
+            if aptget[0] != 0:
+                logger.error("Error while trying to run apt-get upgrade")
+                return false
+
+            get = aptget[1].split('\n')
+            for line in get:
+                if line.startswith('Inst'):
+                     h = re.compile('^Inst (?P<pk_name>[\S]+) \[(?P<pk_ver>[^\]]+)\]')
+                p = h.search(line)
+                if not (p.group('pk_name') and p.group('pk_ver')):
+                    next
+                update_pkgs[p.group('pk_name')] = p.group('pk_ver')
+
+        else:
+            # Ok, new version of apt. This is the pretty way to do it :-)
+            depcache.ReadPinFile()
+            depcache.Init()
+            depcache.Upgrade()
+
+            for pkg in self.cache.Packages:
+               if depcache.MarkedInstall(pkg) or depcache.MarkedUpgrade(pkg):
+               if depcache.GetCandidateVer(pkg) != pkg.CurrentVer:
+                   update_pkgs[pkg.Name] = depcache.GetCandidateVer(pkg).VerStr
+        return update_pkgs
+               
+ 
+    def _get_installed_packages(self):
+        inst_pkgs = {}
+        
+        for pkg in self.cache.Packages:
+            if pkg.CurrentVer:
+                inst_pkgs[pkg.Name] = pkg.CurrentVer
+       return inst_pkgs        
+
 if __name__ == '__main__':
     s = packages()
-    #c = cache()
-    #print c.update_candidates 
-    print "instalados", s.installed
-    print "instalados_versao", s.installed_ver
+    #print "instalados", s.installed
+    #print "instalados_versao", s.installed_ver
     print "update", s.update_candidates
     
