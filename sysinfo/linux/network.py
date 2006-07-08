@@ -378,7 +378,7 @@ class last_logon:
             logger.error("Error while running 'last'")
             return ''
         else:
-	    last_f = l[1].split()[0]
+	        last_f = l[1].split()[0]
             return last_f
                                         
 class network(resolv, ifconfig, misc, last_logon):
