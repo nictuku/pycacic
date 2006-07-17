@@ -80,11 +80,11 @@ class cache:
             get = aptget[1].split('\n')
             for line in get:
                 if line.startswith('Inst'):
-                     h = re.compile('^Inst (?P<pk_name>[\S]+) \[(?P<pk_ver>[^\]]+)\]')
-                p = h.search(line)
-                if not (p.group('pk_name') and p.group('pk_ver')):
-                    next
-                update_pkgs[p.group('pk_name')] = p.group('pk_ver')
+                    h = re.compile('^Inst (?P<pk_name>[\S]+) \[(?P<pk_ver>[^\]]+)\]')
+                    p = h.search(line)
+                    if not (p.group('pk_name') and p.group('pk_ver')):
+                        next
+                    update_pkgs[p.group('pk_name')] = p.group('pk_ver')
 
         else:
             # Ok, new version of apt. This is the pretty way to do it :-)
@@ -94,8 +94,9 @@ class cache:
 
             for pkg in self.cache.Packages:
                if depcache.MarkedInstall(pkg) or depcache.MarkedUpgrade(pkg):
-               if depcache.GetCandidateVer(pkg) != pkg.CurrentVer:
-                   update_pkgs[pkg.Name] = depcache.GetCandidateVer(pkg).VerStr
+                   if depcache.GetCandidateVer(pkg) != pkg.CurrentVer:
+                       update_pkgs[pkg.Name] = \
+                       depcache.GetCandidateVer(pkg).VerStr
         return update_pkgs
                
  
@@ -105,7 +106,7 @@ class cache:
         for pkg in self.cache.Packages:
             if pkg.CurrentVer:
                 inst_pkgs[pkg.Name] = pkg.CurrentVer
-       return inst_pkgs        
+        return inst_pkgs        
 
 if __name__ == '__main__':
     s = packages()

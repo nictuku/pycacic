@@ -283,7 +283,7 @@ active network interfaces. Please review your configuration.")
         """
         netmask = '' 
  
-	if interf:
+        if interf:
             h = re.compile(r'Mask:(?P<netmask>[\w.]+)', re.I)
             w = h.search(self.interf_dict[interf])
             if w:
@@ -294,7 +294,7 @@ active network interfaces. Please review your configuration.")
         """Shows interface status
         """
         
-	if interf:
+        if interf:
             h = re.compile('UP',re.I)
             w = h.search(self.interf_dict[interf])
             if w:
@@ -378,7 +378,7 @@ class last_logon:
             logger.error("Error while running 'last'")
             return ''
         else:
-	        last_f = l[1].split()[0]
+            last_f = l[1].split()[0]
             return last_f
                                         
 class network(resolv, ifconfig, misc, last_logon):
@@ -387,15 +387,15 @@ class network(resolv, ifconfig, misc, last_logon):
     """
 
     def __init__(self):
-	self._ifc = ifconfig()
+        self._ifc = ifconfig()
         resolv.__init__(self)
         misc.__init__(self, self._ifc)
         last_logon.__init__(self)
         self.interface = self.interface_wrapper
 
     def interface_wrapper(self, interf):
-	i = interface(self._ifc, interf)
-	return i
+        i = interface(self._ifc, interf)
+        return i
 
 if __name__ == '__main__':
 # Log para stdout
