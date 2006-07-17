@@ -28,6 +28,9 @@ import os
 import sys
 import commands
 import re
+import logging
+
+logger = logging.getLogger("sysinfo.linux.apt")
 
 class packages:
 
