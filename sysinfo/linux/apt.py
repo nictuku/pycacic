@@ -78,7 +78,8 @@ class cache:
 
             if aptget[0] != 0:
                 logger.error("Error while trying to run apt-get upgrade")
-                return false
+                logger.error("ERROR:" + str(aptget[1]))
+                return False
 
             get = aptget[1].split('\n')
             for line in get:
