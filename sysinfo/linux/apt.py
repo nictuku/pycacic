@@ -74,7 +74,7 @@ class cache:
 
         except AttributeError:
             # We are using an old version of libapt (like sarge's)
-            aptget = commands.getstatusoutput("export LANGUAGE=C; /usr/bin/env apt-get -s upgrade")
+            aptget = commands.getstatusoutput("export LANGUAGE=C; /usr/bin/env  aptitude search '~U' -F '%p## %V##'")
 
             if aptget[0] != 0:
                 logger.error("Error while trying to run apt-get upgrade")
@@ -83,12 +83,11 @@ class cache:
 
             get = aptget[1].split('\n')
             for line in get:
-                if line.startswith('Inst'):
-                    h = re.compile('^Inst (?P<pk_name>[\S]+) \[(?P<pk_ver>[^\]]+)\]')
-                    p = h.search(line)
-                    if not (p.group('pk_name') and p.group('pk_ver')):
-                        next
-                    update_pkgs[p.group('pk_name')] = p.group('pk_ver')
+                h = re.compile('^(?P<pk_name>[\S]+)\s+(?P<pk_ver>[\S]+)')
+                p = h.search(line)
+                if not (p.group('pk_name') and p.group('pk_ver')):
+                    next
+                update_pkgs[p.group('pk_name')] = p.group('pk_ver')
 
         else:
             # Ok, new version of apt. This is the pretty way to do it :-)
