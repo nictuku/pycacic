@@ -1,4 +1,4 @@
-pycacic (0.3-2) dapper; urgency=low
+pycacic (0.3-2mds1) dapper; urgency=low
 
   * Works as expected with old versions of apt
 
