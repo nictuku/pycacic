@@ -22,7 +22,7 @@ Description: Multi-platform system information library
 
 Package: python2.4-sysinfo
 Architecture: all
-Depends: python2.4, lshw, python2.4-apt (>= 0.5.10) | python-apt (>= 0.5.10)
+Depends: python2.4, lshw, aptitude (>= 0.2.15.9-2), python2.4-apt (>= 0.5.10) | python-apt (>= 0.5.10)
 Description: Multi-platform system information library
  Python-sysinfo provides an abstraction layer to system information for
  hardware, software and services in the local computer.
@@ -34,7 +34,7 @@ Description: Multi-platform system information library
 
 Package: python2.3-sysinfo
 Architecture: all
-Depends: python2.3, lshw, python2.3-apt (>= 0.5.10) | python-apt (>= 0.5.10)
+Depends: python2.3, lshw, aptitude (>= 0.2.15.9-2), python2.3-apt (>= 0.5.10) | python-apt (>= 0.5.10)
 Description: Multi-platform system information library
  Python-sysinfo provides an abstraction layer to system information for
  hardware, software and services in the local computer.
