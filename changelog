@@ -1,8 +1,8 @@
-pycacic (0.3-2mds1) dapper; urgency=low
+pycacic (0.3-2mds2) dapper; urgency=low
 
   * Works as expected with old versions of apt
 
- -- Yves Junqueira <yves@cetico.org>  Fri,  7 Jul 2006 22:53:11 -0300
+ -- Yves Junqueira <yves@cetico.org>  Fri,  24 Jul 2006 22:53:11 -0300
 
 pycacic (0.3-1) dapper; urgency=low
 
