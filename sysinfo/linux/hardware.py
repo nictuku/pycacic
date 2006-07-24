@@ -191,7 +191,11 @@ requires root. Current uid: " + id)
         else:
             xmldata = lshwxml[1]
 
-        input = StringIO.StringIO(xmldata)
+        for char in xmldata:
+            if char in string.printable:
+                sane_data += char
+
+        input = StringIO.StringIO(sane_data)
         parser.parse(input)
         self.data = handler.HardWare
 
