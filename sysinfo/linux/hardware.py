@@ -191,7 +191,7 @@ requires root. Current uid: " + id)
         else:
             xmldata = lshwxml[1]
 
-        sane_date = ''
+        sane_data = ''
         for char in xmldata:
             if char in string.printable:
                 sane_data += char
