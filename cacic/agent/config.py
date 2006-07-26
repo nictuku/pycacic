@@ -235,7 +235,14 @@ class load:
             smb_shares = smb.smb_shares
             share_xml = '<?xml version="1.0" encoding="ISO-8859-1"?><comparts>'
             for share in smb_shares:
-                share_xml += '<compart><nm_compartilhamento>' + share + '</nm_compartilhamento><nm_dir_compart></nm_dir_compart><cs_tipo_compart>D</cs_tipo_compart><te_comentario>comentario</te_comentario></compart>'
+                if share['type'] == 'printer':
+                    type = 'I'
+                else:
+                    type = 'D'
+                share_xml += '<compart><nm_compartilhamento>' + share['name']+\
+'</nm_compartilhamento><nm_dir_compart></nm_dir_compart><cs_tipo_compart>' + \
+type + '</cs_tipo_compart><te_comentario>' + share.get('comment', '') + \
+'</te_comentario></compart>'
 
             share_xml += '</comparts>'
 

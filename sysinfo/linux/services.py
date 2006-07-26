@@ -84,18 +84,42 @@ class smb:
         """
         conf = smbconf.split('\n')
         
-        exclude = [ 'global', 'homes', 'printers', 'print$' ]
-        m = re.compile(r'^\s*\[(?P<share>[^\]]+)\][\s]*(#.*)?$')
+        exclude = [ 'global' ]
+        share_search = re.compile(r'^\s*\[(?P<share>[^\]]+)\][\s]*(#.*)?$')
+        comment_search = re.compile(r'^\s*comment\s*=\s*(?P<comment>.*)$')
+        # list of dicts:
         shares = []
+        cur_share = ''
         for line in conf:
-            p = m.search(line)
+            share_match = share_search.search(line)
             try:
-                share = p.group('share')
+                share = share_match.group('share')
             except:
                 pass
             else:
                 if share not in exclude:
-                    shares.append(share)
+                    shares.append({'name': share})
+                    if share in ['printers', 'print$']:
+                        # printer share
+                        shares[-1]['type'] = 'printer'
+                    else:
+                        shares[-1]['type'] = 'directory'
+                    cur_share = share
+                    continue 
+                else:
+                    # beggining a new conf section
+                    cur_share = ''
+                    continue
+
+            # we are only interested if we have a valid share
+            if cur_share:
+                comment_match = comment_search.search(line)
+                try:
+                    comment = comment_match.group('comment')
+                except:
+                    pass
+                else:
+                    shares[-1]['comment'] = comment 
 
         return shares
 
