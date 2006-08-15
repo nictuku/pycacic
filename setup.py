@@ -7,9 +7,9 @@ setup(name='PyCACIC',
       author_email='yves@cetico.org',
       maintainer='Yves Junqueira',
       maintainer_email='yves@cetico.org',
-      url='https://opensvn.csie.org/traccgi/pycacic',
+      url='http://www.cetico.org/pycacic',
       scripts=['pycacic'],
       packages=[
-    #'cacic', 'cacic.agent', 'cacic.extensions', 
+    'cacic', 'cacic.agent', 'cacic.extensions', 
 	'sysinfo', 'sysinfo.linux'],
      )
