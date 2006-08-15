@@ -277,6 +277,9 @@ type + '</cs_tipo_compart><te_comentario>' + share.get('comment', '') + \
         if get_services and get_hard:
 
             logger.debug("Populating 'info' dictionary")
+            # simulating ternary operator :)
+            cdrom = len(hw.dvd_reader.product) > 0 and hw.dvd_reader.product \
+                or hw.dvd_ram_writer.product
 
             self.info =  {
             
@@ -313,7 +316,7 @@ type + '</cs_tipo_compart><te_comentario>' + share.get('comment', '') + \
              'te_bios_desc'             : hw.bios.vendor + hw.bios.version,
              'te_bios_fabricante'       : hw.bios.vendor,
              'te_bios_data'             : hw.bios.version,
-             'te_cdrom_desc'            : hw.dvd_reader.product,
+             'te_cdrom_desc'            : cdrom,
              'te_modem_desc'            : hw.modem.vendor + hw.modem.product,
              'te_mouse_desc'            : hw.mouse.product + hw.mouse.vendor,
              'qt_mem_ram'               : ram_size,
