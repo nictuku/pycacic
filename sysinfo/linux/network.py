@@ -350,8 +350,9 @@ active network interfaces. Please review your configuration.")
             m = test_int.search(x)
             if not m:
                leases_list.remove(x)
-        l = len(leases_list) - 1
-        lease = leases_list[l]
+        if len(leases_list) == 0:
+            return ''
+        lease = leases_list.pop()
 
         o = re.compile('option\s+dhcp-server-identifier\s+(?P<dhcp_server>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s*;')
         k = o.search(lease)
