@@ -376,6 +376,7 @@ class hardware:
         self.sound_board = sound_board(self.hw, 0)
         self.bios = bios(self.hw) # BIOS is always index=0
         self.dvd_reader = dvd_reader(self.hw, 0)
+        self.dvd_ram_writer = dvd_ram_writer(self.hw, 0)
         self.modem = modem(self.hw, 0)
         self.mouse = mouse(self.hw, 0)
         self.memory = memory(self.hw)
